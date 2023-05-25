@@ -8,7 +8,7 @@
   <asset>
     <texture name="floor" type="2d" builtin="checker" rgb1=".1 .2 .3" rgb2=".2 .3 .4" width="300" height="300" mark="edge" markrgb=".2 .3 .4"/>
     <material name="floor" texture="floor" texrepeat="10 10" texuniform="true"/>
-    <hfield name="sample_hfield" file="sample_hfield.png" size="0.2 0.2 0.02 0.015"/>
+    <hfield name="sample_hfield" file="sample_hfield.png" size="0.4 0.2 0.02 0.01"/>
   </asset>
 
   <visual>
