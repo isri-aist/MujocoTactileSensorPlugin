@@ -43,10 +43,9 @@
 
   <sensor>
     <plugin name="touch" plugin="MujocoTactileSensorPlugin" objtype="site" objname="touch">
+      <config key="nchannel" value="3"/>
       <config key="size" value="7 7"/>
       <config key="fov" value="45 45"/>
-      <config key="gamma" value="0"/>
-      <config key="nchannel" value="3"/>
     </plugin>
   </sensor>
 </mujoco>

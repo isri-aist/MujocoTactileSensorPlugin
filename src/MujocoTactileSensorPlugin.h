@@ -4,6 +4,7 @@
 #include <mujoco/mjmodel.h>
 #include <mujoco/mjtnum.h>
 #include <mujoco/mjvisualize.h>
+
 #include <vector>
 
 namespace mujoco::plugin::sensor
@@ -21,6 +22,8 @@ public:
       \param m model
       \param d data
       \param plugin_id plugin ID
+
+      Checks that all config attributes are defined and within their allowed bounds.
    */
   static TactileSensor * Create(const mjModel * m, mjData * d, int plugin_id);
 
@@ -63,11 +66,14 @@ protected:
   //! Horizontal and vertical resolution
   int size_[2];
 
-  //! Horizontal and vertical field of view, in degrees
+  //! Horizontal and vertical field of view (in degrees)
   mjtNum fov_[2];
 
-  //! Foveal deformation
-  mjtNum gamma_;
+  //! Sensor ID
+  int sensor_id_ = -1;
+
+  //! Distances from site to contact points
+  std::vector<mjtNum> distance_;
 
 private:
   /** \brief Constructor.
@@ -75,8 +81,7 @@ private:
       \param d data
       \param plugin_id plugin ID
    */
-  TactileSensor(const mjModel * m, mjData * d, int plugin_id, int nchannel, int * size, mjtNum * fov_x, mjtNum gamma);
-  std::vector<mjtNum> distance_;
+  TactileSensor(const mjModel * m, mjData * d, int plugin_id, int nchannel, int * size, mjtNum * fov_x);
 };
 
 } // namespace mujoco::plugin::sensor

@@ -1,20 +1,12 @@
 #include "MujocoTactileSensorPlugin.h"
 
-#include <algorithm>
-#include <cctype>
-#include <cstdint>
-#include <cstdlib>
-#include <iostream>
-#include <mujoco/mjdata.h>
-#include <mujoco/mjmodel.h>
 #include <mujoco/mjplugin.h>
-#include <mujoco/mjtnum.h>
-#include <mujoco/mjvisualize.h>
 #include <mujoco/mujoco.h>
-#include <optional>
+
+#include <algorithm>
+#include <iostream>
 #include <sstream>
 #include <string>
-#include <utility>
 
 namespace mujoco::plugin::sensor
 {
@@ -41,7 +33,10 @@ void readVector(std::vector<T> & output, const std::string & input)
   char delim = ' ';
   while(getline(ss, item, delim))
   {
-    checkAttr(item);
+    if(!checkAttr(item))
+    {
+      continue;
+    }
     output.push_back(strtod(item.c_str(), nullptr));
   }
 }
@@ -69,7 +64,7 @@ int lowerBound(const mjtNum a[], int n, mjtNum x)
   return l;
 }
 
-// Two dimensional histogram function.
+/** \brief Two dimensional histogram function. */
 void histogram2D(const mjtNum x_data[],
                  const mjtNum y_data[],
                  const mjtNum weights[],
@@ -104,7 +99,7 @@ void histogram2D(const mjtNum x_data[],
   }
 }
 
-// Evenly spaced numbers over a specified interval.
+/** \brief Evenly spaced numbers over a specified interval. */
 void linSpace(mjtNum lower, mjtNum upper, int n, mjtNum array[])
 {
   mjtNum increment = n > 1 ? (upper - lower) / (n - 1) : 0;
@@ -116,40 +111,19 @@ void linSpace(mjtNum lower, mjtNum upper, int n, mjtNum array[])
   }
 }
 
-// Parametrized linear/quintic interpolated nonlinearity.
-mjtNum fovea(mjtNum x, mjtNum gamma)
-{
-  // Quick return.
-  if(!gamma) return x;
-
-  // Foveal deformation.
-  mjtNum g = mjMAX(0, mjMIN(1, gamma));
-  return g * mju_pow(x, 5) + (1 - g) * x;
-}
-
-// Make bin edges.
-void binEdges(mjtNum * x_edges, mjtNum * y_edges, int size[2], mjtNum fov[2], mjtNum gamma)
+/** \brief Make bin edges. */
+void binEdges(mjtNum * x_edges, mjtNum * y_edges, int size[2], mjtNum fov[2])
 {
   // Make unit bin edges.
   linSpace(-1, 1, size[0] + 1, x_edges);
   linSpace(-1, 1, size[1] + 1, y_edges);
-
-  // Apply foveal deformation.
-  for(int i = 0; i < size[0] + 1; i++)
-  {
-    x_edges[i] = fovea(x_edges[i], gamma);
-  }
-  for(int i = 0; i < size[1] + 1; i++)
-  {
-    y_edges[i] = fovea(y_edges[i], gamma);
-  }
 
   // Scale by field-of-view.
   mju_scl(x_edges, x_edges, fov[0] * mjPI / 180, size[0] + 1);
   mju_scl(y_edges, y_edges, fov[1] * mjPI / 180, size[1] + 1);
 }
 
-// Permute 3-vector from 0,1,2 to 2,0,1.
+/** \brief Permute 3-vector from 0,1,2 to 2,0,1. */
 static void xyz2zxy(mjtNum * x)
 {
   mjtNum z = x[2];
@@ -158,12 +132,13 @@ static void xyz2zxy(mjtNum * x)
   x[0] = z;
 }
 
-// In the functions below transforming Cartesian <-> spherical:
-//  - The frame points down the z-axis, so a=e=0 corresponds to (0, 0, -r).
-//  - azimuth (a) corresponds to positive rotation around -y (towards +x).
-//  - elevation (e) corresponds to positive rotation around +x (towards +y).
+/** \brief Transform Cartesian (x,y,z) to spherical (azimuth, elevation, radius).
 
-// Transform Cartesian (x,y,z) to spherical (azimuth, elevation, radius).
+    Transforming Cartesian <-> spherical:
+    - The frame points down the z-axis, so a=e=0 corresponds to (0, 0, -r).
+    - azimuth (a) corresponds to positive rotation around -y (towards +x).
+    - elevation (e) corresponds to positive rotation around +x (towards +y).
+*/
 void cartesianToSpherical(const mjtNum xyz[3], mjtNum aer[3])
 {
   mjtNum x = xyz[0], y = xyz[1], z = xyz[2];
@@ -172,7 +147,7 @@ void cartesianToSpherical(const mjtNum xyz[3], mjtNum aer[3])
   aer[2] = mju_sqrt(x * x + z * z + y * y);
 }
 
-// Transform spherical (azimuth, elevation, radius) to Cartesian (x,y,z).
+/** \brief Transform spherical (azimuth, elevation, radius) to Cartesian (x,y,z). */
 void sphericalToCartesian(const mjtNum aer[3], mjtNum xyz[3])
 {
   mjtNum a = aer[0], e = aer[1], r = aer[2];
@@ -183,12 +158,9 @@ void sphericalToCartesian(const mjtNum aer[3], mjtNum xyz[3])
 
 } // namespace
 
-// Creates a TactileSensor instance if all config attributes are defined and
-// within their allowed bounds.
 TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_id)
 {
-  if(checkAttr(std::string(mj_getPluginConfig(m, plugin_id, "gamma")))
-     && checkAttr(std::string(mj_getPluginConfig(m, plugin_id, "nchannel"))))
+  if(checkAttr(std::string(mj_getPluginConfig(m, plugin_id, "nchannel"))))
   {
     // nchannel
     int nchannel = strtod(mj_getPluginConfig(m, plugin_id, "nchannel"), nullptr);
@@ -234,46 +206,38 @@ TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_
       return nullptr;
     }
 
-    // gamma
-    mjtNum gamma = strtod(mj_getPluginConfig(m, plugin_id, "gamma"), nullptr);
-    if(gamma < 0 || gamma > 1)
-    {
-      mju_error("`gamma` must be a nonnegative float between [0, 1]");
-      return nullptr;
-    }
-
-    return new TactileSensor(m, d, plugin_id, nchannel, size.data(), fov.data(), gamma);
+    return new TactileSensor(m, d, plugin_id, nchannel, size.data(), fov.data());
   }
   else
   {
-    mju_error("Invalid or missing parameters in touch_grid sensor plugin");
+    mju_error("Invalid or missing parameters in MujocoTactileSensorPlugin");
     return nullptr;
   }
 }
 
-TactileSensor::TactileSensor(const mjModel * m,
-                             mjData * d,
-                             int plugin_id,
-                             int nchannel,
-                             int size[2],
-                             mjtNum fov[2],
-                             mjtNum gamma)
-: nchannel_(nchannel), size_{size[0], size[1]}, fov_{fov[0], fov[1]}, gamma_(gamma)
+TactileSensor::TactileSensor(const mjModel * m, mjData * d, int plugin_id, int nchannel, int size[2], mjtNum fov[2])
+: nchannel_(nchannel), size_{size[0], size[1]}, fov_{fov[0], fov[1]}
 {
-  // Make sure sensor is attached to a site.
-  for(int i = 0; i < m->nsensor; ++i)
+  // Set sensor_id_
+  for(int sensor_id = 0; sensor_id < m->nsensor; ++sensor_id)
   {
-    if(m->sensor_type[i] == mjSENS_PLUGIN && m->sensor_plugin[i] == plugin_id)
+    if(m->sensor_type[sensor_id] == mjSENS_PLUGIN && m->sensor_plugin[sensor_id] == plugin_id)
     {
-      if(m->sensor_objtype[i] != mjOBJ_SITE)
-      {
-        mju_error("Touch Grid sensor must be attached to a site");
-      }
+      sensor_id_ = sensor_id;
+      break;
     }
+  }
+
+  // Make sure sensor is attached to a site.
+  if(m->sensor_objtype[sensor_id_] != mjOBJ_SITE)
+  {
+    mju_error("MujocoTactileSensorPlugin must be attached to a site");
   }
 
   // Allocate distance array.
   distance_.resize(size[0] * size[1], 0);
+
+  std::cout << "[TactileSensor] Construct." << std::endl;
 }
 
 void TactileSensor::reset(const mjModel * m, int plugin_id) {}
@@ -282,28 +246,18 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int plugin_id)
 {
   mjMARKSTACK;
 
-  // Get sensor id.
-  int id;
-  for(id = 0; id < m->nsensor; ++id)
-  {
-    if(m->sensor_type[id] == mjSENS_PLUGIN && m->sensor_plugin[id] == plugin_id)
-    {
-      break;
-    }
-  }
-
   // Clear sensordata and distance matrix.
-  mjtNum * sensordata = d->sensordata + m->sensor_adr[id];
-  mju_zero(sensordata, m->sensor_dim[id]);
+  mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
+  mju_zero(sensordata, m->sensor_dim[sensor_id_]);
   int frame = size_[0] * size_[1];
   mju_zero(distance_.data(), frame);
 
   // Get site id.
-  int site_id = m->sensor_objid[id];
+  int site_id = m->sensor_objid[sensor_id_];
 
   // Count contacts.
   int ncon = 0;
-  int parent_body = m->body_weldid[m->site_bodyid[site_id]];
+  int parent_body = m->site_bodyid[site_id];
   int parent_weld = m->body_weldid[parent_body];
   for(int i = 0; i < d->ncon; i++)
   {
@@ -326,7 +280,7 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int plugin_id)
   mjtNum * site_pos = d->site_xpos + 3 * site_id;
   mjtNum * site_mat = d->site_xmat + 9 * site_id;
 
-  // allocate contact forces and positions
+  // Allocate contact forces and positions
   mjtNum * forces = mj_stackAlloc(d, ncon * 6);
   mjtNum * positions = mj_stackAlloc(d, ncon * 3);
 
@@ -385,7 +339,7 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int plugin_id)
   mjtNum * y_edges = mj_stackAlloc(d, size_[1] + 1);
 
   // Make bin edges.
-  binEdges(x_edges, y_edges, size_, fov_, gamma_);
+  binEdges(x_edges, y_edges, size_, fov_);
 
   // Compute sensor output.
   for(int i = 0; i < nchannel_; i++)
@@ -424,18 +378,8 @@ void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * o
 {
   mjMARKSTACK;
 
-  // Get sensor id.
-  int id;
-  for(id = 0; id < m->nsensor; ++id)
-  {
-    if(m->sensor_type[id] == mjSENS_PLUGIN && m->sensor_plugin[id] == plugin_id)
-    {
-      break;
-    }
-  }
-
   // Get sensor data.
-  mjtNum * sensordata = d->sensordata + m->sensor_adr[id];
+  mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
 
   // Get maximum absolute normal force.
   mjtNum maxval = 0;
@@ -453,7 +397,7 @@ void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * o
   }
 
   // Get site id and frame.
-  int site_id = m->sensor_objid[id];
+  int site_id = m->sensor_objid[sensor_id_];
   mjtNum * site_pos = d->site_xpos + 3 * site_id;
   mjtNum * site_mat = d->site_xmat + 9 * site_id;
   mjtNum site_quat[4];
@@ -464,7 +408,7 @@ void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * o
   mjtNum * y_edges = mj_stackAlloc(d, size_[1] + 1);
 
   // Make bin edges.
-  binEdges(x_edges, y_edges, size_, fov_, gamma_);
+  binEdges(x_edges, y_edges, size_, fov_);
 
   // Draw geoms.
   for(int i = 0; i < size_[0]; i++)
@@ -520,7 +464,7 @@ void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * o
         mjvGeom * thisgeom = scn->geoms + scn->ngeom;
         mjv_initGeom(thisgeom, mjGEOM_BOX, size, pos, mat, rgba);
         thisgeom->objtype = mjOBJ_UNKNOWN;
-        thisgeom->objid = id;
+        thisgeom->objid = -1;
         thisgeom->category = mjCAT_DECOR;
         thisgeom->segid = scn->ngeom;
         scn->ngeom++;
@@ -540,7 +484,7 @@ void TactileSensor::RegisterPlugin()
   plugin.capabilityflags |= mjPLUGIN_SENSOR;
 
   // Parameterized by 4 attributes.
-  const char * attributes[] = {"nchannel", "size", "fov", "gamma"};
+  const char * attributes[] = {"nchannel", "size", "fov"};
   plugin.nattribute = sizeof(attributes) / sizeof(attributes[0]);
   plugin.attributes = attributes;
 
