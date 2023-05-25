@@ -60,8 +60,10 @@ IncludeCategories:
     Priority:        7
   - Regex:           '^(<(nanomsg|geos|.*_msgs|ros|tf2.*)/)'
     Priority:        8
-  - Regex:           '.*'
+  - Regex:           '^(<mujoco/)'
     Priority:        9
+  - Regex:           '.*'
+    Priority:        10
 IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: true
 IndentPPDirectives: AfterHash
