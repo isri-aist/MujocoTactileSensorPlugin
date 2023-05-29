@@ -5,25 +5,42 @@
 #include <mujoco/mjtnum.h>
 #include <mujoco/mjvisualize.h>
 
-#include <vector>
-
 namespace mujoco::plugin::sensor
 {
 
 /** \brief Tactile sensor.
 
-    A tactile sensor is associated with a site and senses contact normal forces between the site's parent body and all
-   other bodies.
+    A tactile sensor is attached to a site and senses contact normal forces between the site's parent body and all other
+   bodies.
  */
 class TactileSensor
 {
+public:
+  /** \brief Sensor surface type. */
+  typedef enum SurfaceType_
+  {
+    //! Plane surface
+    SurfacePlane = 0,
+
+    //! Cylindrical surface
+    SurfaceCylinder
+  } SurfaceType;
+
+  /** \brief Sensor grid type. */
+  typedef enum GridType_
+  {
+    //! Square grid
+    GridSquare = 0,
+
+    //! Hexagonal grid
+    GridHex
+  } GridType;
+
 public:
   /** \brief Create an instance.
       \param m model
       \param d data
       \param plugin_id plugin ID
-
-      Checks that all config attributes are defined and within their allowed bounds.
    */
   static TactileSensor * Create(const mjModel * m, mjData * d, int plugin_id);
 
@@ -34,8 +51,8 @@ public:
   /** \brief Copy constructor. */
   TactileSensor(TactileSensor &&) = default;
 
-  /** \brief Register plugin. */
-  ~TactileSensor() = default;
+  /** \brief Destructor. */
+  ~TactileSensor();
 
   /** \brief Reset.
       \param m model
@@ -59,29 +76,48 @@ public:
    */
   void visualize(const mjModel * m, mjData * d, const mjvOption * opt, mjvScene * scn, int plugin_id);
 
-protected:
-  //! Number of channels (1-6)
-  int nchannel_;
-
-  //! Horizontal and vertical resolution
-  int size_[2];
-
-  //! Horizontal and vertical field of view (in degrees)
-  mjtNum fov_[2];
-
-  //! Sensor ID
-  int sensor_id_ = -1;
-
-  //! Distances from site to contact points
-  std::vector<mjtNum> distance_;
-
 private:
   /** \brief Constructor.
       \param m model
       \param d data
       \param plugin_id plugin ID
+      \param sensor_nums number of sensors
+      \param sensor_interval sensor interval
+      \param surface_radius sensor surface radius (0 for plane)
+      \param is_hex_grid whether the sensor grid is hexagonal
    */
-  TactileSensor(const mjModel * m, mjData * d, int plugin_id, int nchannel, int * size, mjtNum * fov_x);
+  TactileSensor(const mjModel * m,
+                mjData * d,
+                int plugin_id,
+                int sensor_nums[2],
+                mjtNum sensor_interval,
+                mjtNum surface_radius,
+                bool is_hex_grid);
+
+protected:
+  //! Total number of sensors
+  int sensor_total_num_;
+
+  //! Sensor interval
+  mjtNum sensor_interval_;
+
+  //! Sensor surface type
+  SurfaceType surface_type_;
+
+  //! Sensor grid type
+  GridType grid_type_;
+
+  //! Sensor ID
+  int sensor_id_ = -1;
+
+  //! Site ID
+  int site_id_ = -1;
+
+  //! List of sensor positions in the site frame
+  mjtNum * sensor_pos_list_;
+
+  //! List of sensor normal directions in the site frame
+  mjtNum * sensor_normal_list_;
 };
 
 } // namespace mujoco::plugin::sensor

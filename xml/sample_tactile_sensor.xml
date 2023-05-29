@@ -6,46 +6,54 @@
   </extension>
 
   <asset>
-    <texture name="floor" type="2d" builtin="checker" rgb1=".1 .2 .3" rgb2=".2 .3 .4" width="300" height="300" mark="edge" markrgb=".2 .3 .4"/>
+    <texture name="floor" type="2d" builtin="checker" rgb1="0.1 0.2 0.3" rgb2="0.2 0.3 0.4" width="300" height="300" mark="edge" markrgb="0.2 0.3 0.4"/>
     <material name="floor" texture="floor" texrepeat="10 10" texuniform="true"/>
     <hfield name="sample_hfield" file="sample_hfield.png" size="0.4 0.2 0.02 0.01"/>
   </asset>
 
   <visual>
-    <headlight ambient=".7 .7 .7" diffuse=".2 .2 .2" specular="0.1 0.1 0.1"/>
+    <headlight ambient="0.7 0.7 0.7" diffuse="0.2 0.2 0.2" specular="0.1 0.1 0.1"/>
     <map znear="0.01"/>
-    <scale contactwidth=".02" contactheight=".5"/>
+    <scale contactwidth="0.02" contactheight="0.5"/>
   </visual>
 
   <default>
-    <geom friction="0.4" solimp="0 0.95 0.02"/>
+    <geom friction="0.4" solimp="0.1 0.95 0.01"/>
   </default>
 
-  <statistic center="0 0 1" extent="1" meansize=".1"/>
+  <statistic center="0 0 1" extent="1" meansize="0.1"/>
 
   <worldbody>
-    <light pos="1 0 .3" dir="-1 0 -.3"/>
-    <light pos="-1 0 .3" dir="1 0 -.3"/>
+    <light pos="1 0 0.3" dir="-1 0 -0.3"/>
+    <light pos="-1 0 0.3" dir="1 0 -0.3"/>
 
-    <geom name="floor" type="plane" material="floor" size="1 1 .01" pos="0 0 -0.01"/>
-    <geom name="sample_hfield" type="hfield" hfield="sample_hfield" rgba=".5 .5 .7 1"/>
+    <geom name="floor" type="plane" material="floor" size="1 1 0.01" pos="0 0 -0.01"/>
+    <geom name="sample_hfield" type="hfield" hfield="sample_hfield" rgba="0.8 0.1 0.1 1"/>
 
-    <body name="ball" pos="0 0 1">
+    <body name="object" pos="0 0 1">
       <joint name="x" type="slide" axis="1 0 0" damping="1"/>
       <joint name="y" type="slide" axis="0 1 0" damping="1"/>
       <joint name="z" type="slide" axis="0 0 1"/>
       <joint name="rx" axis="1 0 0" springdamper="0.2 1"/>
       <joint name="ry" axis="0 1 0" springdamper="0.2 1"/>
-      <geom type="ellipsoid" size=".3 .5 .1" mass="0.1" rgba=".5 .5 .5 .3"/>
-      <site name="touch" pos="0 0 .1"/>
+
+      <!-- <geom type="box" size="0.2 0.2 0.05" mass="0.1" rgba="0.5 0.5 0.5 0.3"/> -->
+      <!-- <site name="touch" pos="0 0 -0.05"/> -->
+
+      <geom type="cylinder" size="0.5" fromto="0 -0.2 0.5 0 0.2 0.5" mass="0.1" rgba="0.5 0.5 0.5 0.3"/>
+      <site name="touch" pos="0 0 0" euler="0 0 90.0"/>
+
+      <!-- <geom type="cylinder" size="0.5" fromto="-0.2 0 0.5 0.2 0 0.5" mass="0.1" rgba="0.5 0.5 0.5 0.3"/> -->
+      <!-- <site name="touch" pos="0 0 0" euler="0 0 0"/> -->
     </body>
   </worldbody>
 
   <sensor>
     <plugin name="touch" plugin="MujocoTactileSensorPlugin" objtype="site" objname="touch">
-      <config key="nchannel" value="3"/>
-      <config key="size" value="7 7"/>
-      <config key="fov" value="45 45"/>
+      <config key="sensor_nums" value="20 20"/>
+      <config key="sensor_interval" value="0.02"/>
+      <config key="surface_radius" value="0.5"/>
+      <config key="is_hex_grid" value="true"/>
     </plugin>
   </sensor>
 </mujoco>
