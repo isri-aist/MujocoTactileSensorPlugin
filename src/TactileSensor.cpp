@@ -1,4 +1,4 @@
-#include "MujocoTactileSensorPlugin.h"
+#include "TactileSensor.h"
 
 #include <mujoco/mujoco.h>
 
@@ -369,8 +369,4 @@ void TactileSensor::RegisterPlugin()
   mjp_registerPlugin(&plugin);
 }
 
-mjPLUGIN_LIB_INIT
-{
-  TactileSensor::RegisterPlugin();
-}
 } // namespace mujoco::plugin::sensor
