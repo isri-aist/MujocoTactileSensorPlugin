@@ -1,6 +1,6 @@
-#include "TactileSensor.h"
-
 #include <mujoco/mujoco.h>
+
+#include <MujocoTactileSensorPlugin/TactileSensor.h>
 
 #include <algorithm>
 #include <iostream>

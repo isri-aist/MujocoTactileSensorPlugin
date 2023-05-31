@@ -1,6 +1,6 @@
 #include <mujoco/mjplugin.h>
 
-#include "TactileSensor.h"
+#include <MujocoTactileSensorPlugin/TactileSensor.h>
 
 namespace mujoco::plugin::sensor
 {

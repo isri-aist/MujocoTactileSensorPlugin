@@ -62,8 +62,10 @@ IncludeCategories:
     Priority:        8
   - Regex:           '^(<mujoco/)'
     Priority:        9
-  - Regex:           '.*'
+  - Regex:           '^(<MujocoTactileSensorPlugin/)'
     Priority:        10
+  - Regex:           '.*'
+    Priority:        11
 IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: true
 IndentPPDirectives: AfterHash
