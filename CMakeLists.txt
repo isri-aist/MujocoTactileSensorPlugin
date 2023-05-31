@@ -1,5 +1,19 @@
 cmake_minimum_required(VERSION 3.8)
-project(mujoco_tactile_sensor_plugin)
+
+set(PROJECT_NAME MujocoTactileSensorPlugin)
+set(PROJECT_GENERATED_HEADERS_SKIP_DEPRECATED ON)
+set(PROJECT_GENERATED_HEADERS_SKIP_CONFIG ON)
+set(PROJECT_GENERATED_HEADERS_SKIP_WARNING ON)
+set(PROJECT_URL https://github.com/isri-aist/MujocoTactileSensorPlugin)
+set(PROJECT_DESCRIPTION "")
+set(CMAKE_CXX_STANDARD 17)
+set(PROJECT_USE_CMAKE_EXPORT TRUE)
+set(CXX_DISABLE_WERROR ON)
+
+option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+
+include(cmake/base.cmake)
+project(${PROJECT_NAME} LANGUAGES CXX)
 
 # MuJoCo
 if(NOT DEFINED MUJOCO_ROOT_DIR)
@@ -19,3 +33,4 @@ else()
 endif()
 
 add_subdirectory(src)
+add_subdirectory(xml)
