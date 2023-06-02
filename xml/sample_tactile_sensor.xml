@@ -52,6 +52,7 @@
     <plugin name="touch" plugin="MujocoTactileSensorPlugin" objtype="site" objname="touch">
       <config key="sensor_nums" value="20 20"/>
       <config key="sensor_interval" value="0.02"/>
+      <!-- <config key="surface_radius" value="0.0"/> -->
       <config key="surface_radius" value="0.5"/>
       <config key="is_hex_grid" value="true"/>
     </plugin>
