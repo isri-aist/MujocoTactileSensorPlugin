@@ -76,11 +76,11 @@ public:
    */
   void visualize(const mjModel * m, mjData * d, const mjvOption * opt, mjvScene * scn, int plugin_id);
 
-private:
+protected:
   /** \brief Constructor.
       \param m model
       \param d data
-      \param plugin_id plugin ID
+      \param sensor_id sensor ID
       \param sensor_nums number of sensors
       \param sensor_interval sensor interval
       \param surface_radius sensor surface radius (0 for plane)
@@ -88,13 +88,19 @@ private:
    */
   TactileSensor(const mjModel * m,
                 mjData * d,
-                int plugin_id,
+                int sensor_id,
                 int sensor_nums[2],
                 mjtNum sensor_interval,
                 mjtNum surface_radius,
                 bool is_hex_grid);
 
 protected:
+  //! Sensor ID
+  int sensor_id_ = -1;
+
+  //! Site ID
+  int site_id_ = -1;
+
   //! Total number of sensors
   int sensor_total_num_;
 
@@ -106,12 +112,6 @@ protected:
 
   //! Sensor grid type
   GridType grid_type_;
-
-  //! Sensor ID
-  int sensor_id_ = -1;
-
-  //! Site ID
-  int site_id_ = -1;
 
   //! List of sensor positions in the site frame
   mjtNum * sensor_pos_list_;

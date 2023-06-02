@@ -3,6 +3,7 @@
 #include <MujocoTactileSensorPlugin/TactileSensor.h>
 
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -37,7 +38,7 @@ void readVector(std::vector<T> & output, const std::string & input)
     {
       continue;
     }
-    output.push_back(strtod(item.c_str(), nullptr));
+    output.push_back(static_cast<T>(strtod(item.c_str(), nullptr)));
   }
 }
 } // namespace
@@ -45,33 +46,49 @@ void readVector(std::vector<T> & output, const std::string & input)
 TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_id)
 {
   // sensor_nums
-  std::string sensor_nums_str = std::string(mj_getPluginConfig(m, plugin_id, "sensor_nums"));
+  const char * sensor_nums_char = mj_getPluginConfig(m, plugin_id, "sensor_nums");
+  if(strlen(sensor_nums_char) == 0)
+  {
+    mju_error("[TactileSensor] `sensor_nums` is missing.");
+    return nullptr;
+  }
   std::vector<int> sensor_nums;
-  readVector(sensor_nums, sensor_nums_str.c_str());
+  readVector(sensor_nums, std::string(sensor_nums_char));
   if(sensor_nums.size() != 2)
   {
-    mju_error("Size of `sensor_nums` must be 2.");
+    mju_error("[TactileSensor] Size of `sensor_nums` must be 2.");
     return nullptr;
   }
   if(sensor_nums[0] <= 0 || sensor_nums[1] <= 0)
   {
-    mju_error("All elements in `sensor_nums` must be positive.");
+    mju_error("[TactileSensor] All elements in `sensor_nums` must be positive.");
     return nullptr;
   }
 
   // sensor_interval
-  mjtNum sensor_interval = strtod(mj_getPluginConfig(m, plugin_id, "sensor_interval"), nullptr);
+  const char * sensor_interval_char = mj_getPluginConfig(m, plugin_id, "sensor_interval");
+  if(strlen(sensor_interval_char) == 0)
+  {
+    mju_error("[TactileSensor] `sensor_interval` is missing.");
+    return nullptr;
+  }
+  mjtNum sensor_interval = strtod(sensor_interval_char, nullptr);
   if(sensor_interval <= 0)
   {
-    mju_error("`sensor_interval` must be positive.");
+    mju_error("[TactileSensor] `sensor_interval` must be positive.");
     return nullptr;
   }
 
   // surface_radius
-  mjtNum surface_radius = strtod(mj_getPluginConfig(m, plugin_id, "surface_radius"), nullptr);
+  const char * surface_radius_char = mj_getPluginConfig(m, plugin_id, "surface_radius");
+  if(strlen(surface_radius_char) == 0)
+  {
+    mju_error("[TactileSensor] `surface_radius` is missing.");
+  }
+  mjtNum surface_radius = strtod(surface_radius_char, nullptr);
   if(surface_radius < 0)
   {
-    mju_error("`surface_radius` must be nonnegative.");
+    mju_error("[TactileSensor] `surface_radius` must be nonnegative.");
     return nullptr;
   }
 
@@ -79,40 +96,40 @@ TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_
   std::string is_hex_grid_str = std::string(mj_getPluginConfig(m, plugin_id, "is_hex_grid"));
   bool is_hex_grid = (is_hex_grid_str == "true");
 
-  return new TactileSensor(m, d, plugin_id, sensor_nums.data(), sensor_interval, surface_radius, is_hex_grid);
+  // Set sensor_id
+  int sensor_id = 0;
+  for(; sensor_id < m->nsensor; sensor_id++)
+  {
+    if(m->sensor_type[sensor_id] == mjSENS_PLUGIN && m->sensor_plugin[sensor_id] == plugin_id)
+    {
+      break;
+    }
+  }
+  if(sensor_id == m->nsensor)
+  {
+    mju_error("[TactileSensor] Plugin not found in sensors.");
+    return nullptr;
+  }
+  if(m->sensor_objtype[sensor_id] != mjOBJ_SITE)
+  {
+    mju_error("[TactileSensor] Plugin must be attached to a site.");
+    return nullptr;
+  }
+
+  return new TactileSensor(m, d, sensor_id, sensor_nums.data(), sensor_interval, surface_radius, is_hex_grid);
 }
 
 TactileSensor::TactileSensor(const mjModel * m,
                              mjData * d,
-                             int plugin_id,
+                             int sensor_id,
                              int sensor_nums[2],
                              mjtNum sensor_interval,
                              mjtNum surface_radius,
                              bool is_hex_grid)
-: sensor_total_num_(sensor_nums[0] * sensor_nums[1]), sensor_interval_(sensor_interval),
-  surface_type_(surface_radius == 0 ? SurfacePlane : SurfaceCylinder), grid_type_(is_hex_grid ? GridHex : GridSquare)
+: sensor_id_(sensor_id), site_id_(m->sensor_objid[sensor_id]), sensor_total_num_(sensor_nums[0] * sensor_nums[1]),
+  sensor_interval_(sensor_interval), surface_type_(surface_radius == 0 ? SurfacePlane : SurfaceCylinder),
+  grid_type_(is_hex_grid ? GridHex : GridSquare)
 {
-  // Set sensor_id_ and site_id_
-  for(int sensor_id = 0; sensor_id < m->nsensor; sensor_id++)
-  {
-    if(m->sensor_type[sensor_id] == mjSENS_PLUGIN && m->sensor_plugin[sensor_id] == plugin_id)
-    {
-      sensor_id_ = sensor_id;
-      site_id_ = m->sensor_objid[sensor_id_];
-      break;
-    }
-  }
-  if(sensor_id_ == -1)
-  {
-    mju_error("MujocoTactileSensorPlugin not found.");
-  }
-
-  // Make sure sensor is attached to a site
-  if(m->sensor_objtype[sensor_id_] != mjOBJ_SITE)
-  {
-    mju_error("MujocoTactileSensorPlugin must be attached to a site.");
-  }
-
   // Set sensor_pos_list_ and sensor_normal_list_
   sensor_pos_list_ = static_cast<mjtNum *>(mju_malloc(3 * sensor_total_num_ * sizeof(mjtNum)));
   sensor_normal_list_ = static_cast<mjtNum *>(mju_malloc(3 * sensor_total_num_ * sizeof(mjtNum)));
@@ -164,9 +181,14 @@ TactileSensor::~TactileSensor()
   mju_free(sensor_normal_list_);
 }
 
-void TactileSensor::reset(const mjModel * m, int plugin_id) {}
+void TactileSensor::reset(const mjModel *, // m
+                          int // plugin_id
+)
+{
+}
 
-void TactileSensor::compute(const mjModel * m, mjData * d, int plugin_id)
+void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
+)
 {
   mjMARKSTACK;
 
@@ -228,7 +250,12 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int plugin_id)
   mjFREESTACK;
 }
 
-void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * opt, mjvScene * scn, int plugin_id)
+void TactileSensor::visualize(const mjModel * m,
+                              mjData * d,
+                              const mjvOption *, // opt
+                              mjvScene * scn,
+                              int // plugin_id
+)
 {
   mjMARKSTACK;
 
@@ -270,11 +297,11 @@ void TactileSensor::visualize(const mjModel * m, mjData * d, const mjvOption * o
     float rgba[4] = {1, 1, 1, 0.5};
     if(sensordata[sensor_idx] > 0)
     {
-      rgba[0] = 1.0 - sensordata[sensor_idx] / force_max;
+      rgba[0] = static_cast<float>(1.0 - sensordata[sensor_idx] / force_max);
     }
     else if(sensordata[sensor_idx] < 0)
     {
-      rgba[1] = 1.0 + sensordata[sensor_idx] / force_max;
+      rgba[1] = static_cast<float>(1.0 + sensordata[sensor_idx] / force_max);
     }
 
     mjvGeom * sensor_geom = scn->geoms + scn->ngeom;
@@ -315,13 +342,31 @@ void TactileSensor::RegisterPlugin()
   plugin.nattribute = sizeof(attributes) / sizeof(attributes[0]);
   plugin.attributes = attributes;
 
-  plugin.nstate = +[](const mjModel * m, int instance) { return 0; };
+  plugin.nstate = +[](const mjModel *, // m
+                      int // instance
+                   ) { return 0; };
 
-  plugin.nsensordata = +[](const mjModel * m, int plugin_id, int sensor_id)
+  plugin.nsensordata = +[](const mjModel * m, int plugin_id, int // sensor_id
+                        )
   {
-    std::string sensor_nums_str = std::string(mj_getPluginConfig(m, plugin_id, "sensor_nums"));
+    const char * sensor_nums_char = mj_getPluginConfig(m, plugin_id, "sensor_nums");
+    if(strlen(sensor_nums_char) == 0)
+    {
+      mju_error("[TactileSensor] `sensor_nums` is missing.");
+      return 0;
+    }
     std::vector<int> sensor_nums;
-    readVector(sensor_nums, sensor_nums_str.c_str());
+    readVector(sensor_nums, std::string(sensor_nums_char));
+    if(sensor_nums.size() != 2)
+    {
+      mju_error("[TactileSensor] Size of `sensor_nums` must be 2.");
+      return 0;
+    }
+    if(sensor_nums[0] <= 0 || sensor_nums[1] <= 0)
+    {
+      mju_error("[TactileSensor] All elements in `sensor_nums` must be positive.");
+      return 0;
+    }
     int sensor_total_num = sensor_nums[0] * sensor_nums[1];
     /// f: force, p: position, n: normal
     // (f_0, ..., f_N, px_0, py_0, pz_0, ..., px_N, py_N, pz_N, nx_0, ny_0, nz_0, ..., nx_N, ny_N, nz_N)
@@ -348,13 +393,15 @@ void TactileSensor::RegisterPlugin()
     d->plugin_data[instance] = 0;
   };
 
-  plugin.reset = +[](const mjModel * m, double * plugin_state, void * plugin_data, int instance)
+  plugin.reset = +[](const mjModel * m, double *, // plugin_state
+                     void * plugin_data, int instance)
   {
     auto * TactileSensor = reinterpret_cast<class TactileSensor *>(plugin_data);
     TactileSensor->reset(m, instance);
   };
 
-  plugin.compute = +[](const mjModel * m, mjData * d, int instance, int capability_bit)
+  plugin.compute = +[](const mjModel * m, mjData * d, int instance, int // capability_bit
+                    )
   {
     auto * TactileSensor = reinterpret_cast<class TactileSensor *>(d->plugin_data[instance]);
     TactileSensor->compute(m, d, instance);
