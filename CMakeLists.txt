@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-set(PROJECT_NAME MujocoTactileSensorPlugin)
+set(PROJECT_NAME mujoco_tactile_sensor_plugin)
 set(PROJECT_GENERATED_HEADERS_SKIP_DEPRECATED ON)
 set(PROJECT_GENERATED_HEADERS_SKIP_CONFIG ON)
 set(PROJECT_GENERATED_HEADERS_SKIP_WARNING ON)
@@ -31,6 +31,13 @@ if(EXISTS ${LIB_MUJOCO})
   message(STATUS "MuJoCo lib found: " ${LIB_MUJOCO})
 else()
   message(FATAL_ERROR "MuJoCo lib not found.")
+endif()
+
+if(DEFINED CATKIN_DEVEL_PREFIX)
+  find_package(catkin REQUIRED)
+
+  catkin_package(INCLUDE_DIRS include LIBRARIES TactileSensor
+                 TactileSensorPlugin)
 endif()
 
 add_subdirectory(src)

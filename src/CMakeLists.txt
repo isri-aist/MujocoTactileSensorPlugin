@@ -3,10 +3,14 @@ target_include_directories(
   TactileSensor PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                        $<INSTALL_INTERFACE:include>)
 target_include_directories(TactileSensor PUBLIC ${MUJOCO_INCLUDE_DIR})
-target_link_libraries(TactileSensor PRIVATE ${LIB_MUJOCO})
+target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
+if(DEFINED CATKIN_DEVEL_PREFIX)
+  target_include_directories(TactileSensor PUBLIC ${catkin_INCLUDE_DIRS})
+  target_link_libraries(TactileSensor PUBLIC ${catkin_LIBRARIES})
+endif()
 
 add_library(TactileSensorPlugin SHARED plugin.cpp)
-target_link_libraries(TactileSensorPlugin PRIVATE TactileSensor)
+target_link_libraries(TactileSensorPlugin PUBLIC TactileSensor)
 
 install(
   TARGETS TactileSensor TactileSensorPlugin

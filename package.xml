@@ -1,0 +1,17 @@
+<package format="2">
+  <name>mujoco_tactile_sensor_plugin</name>
+  <version>0.1.0</version>
+  <description>
+    Plugin to simulate tactile sensors in MuJoCo
+  </description>
+  <maintainer email="m-murooka@aist.go.jp">Masaki Murooka</maintainer>
+  <license>BSD</license>
+
+  <url>http://ros.org/wiki/mujoco_tactile_sensor_plugin</url>
+  <author>Masaki Murooka</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <doc_depend>doxygen</doc_depend>
+  <doc_depend>graphviz</doc_depend>
+</package>
