@@ -335,7 +335,7 @@ void TactileSensor::RegisterPlugin()
   mjpPlugin plugin;
   mjp_defaultPlugin(&plugin);
 
-  plugin.name = "MujocoTactileSensorPlugin";
+  plugin.name = "TactileSensor";
   plugin.capabilityflags |= mjPLUGIN_SENSOR;
 
   const char * attributes[] = {"sensor_nums", "sensor_interval", "surface_radius", "is_hex_grid"};
@@ -343,7 +343,7 @@ void TactileSensor::RegisterPlugin()
   plugin.attributes = attributes;
 
   plugin.nstate = +[](const mjModel *, // m
-                      int // instance
+                      int // plugin_id
                    ) { return 0; };
 
   plugin.nsensordata = +[](const mjModel * m, int plugin_id, int // sensor_id
@@ -376,41 +376,41 @@ void TactileSensor::RegisterPlugin()
   // Can only run after forces have been computed
   plugin.needstage = mjSTAGE_ACC;
 
-  plugin.init = +[](const mjModel * m, mjData * d, int instance)
+  plugin.init = +[](const mjModel * m, mjData * d, int plugin_id)
   {
-    auto * TactileSensor = TactileSensor::Create(m, d, instance);
-    if(!TactileSensor)
+    auto * plugin_instance = TactileSensor::Create(m, d, plugin_id);
+    if(!plugin_instance)
     {
       return -1;
     }
-    d->plugin_data[instance] = reinterpret_cast<uintptr_t>(TactileSensor);
+    d->plugin_data[plugin_id] = reinterpret_cast<uintptr_t>(plugin_instance);
     return 0;
   };
 
-  plugin.destroy = +[](mjData * d, int instance)
+  plugin.destroy = +[](mjData * d, int plugin_id)
   {
-    delete reinterpret_cast<TactileSensor *>(d->plugin_data[instance]);
-    d->plugin_data[instance] = 0;
+    delete reinterpret_cast<TactileSensor *>(d->plugin_data[plugin_id]);
+    d->plugin_data[plugin_id] = 0;
   };
 
   plugin.reset = +[](const mjModel * m, double *, // plugin_state
-                     void * plugin_data, int instance)
+                     void * plugin_data, int plugin_id)
   {
-    auto * TactileSensor = reinterpret_cast<class TactileSensor *>(plugin_data);
-    TactileSensor->reset(m, instance);
+    auto * plugin_instance = reinterpret_cast<class TactileSensor *>(plugin_data);
+    plugin_instance->reset(m, plugin_id);
   };
 
-  plugin.compute = +[](const mjModel * m, mjData * d, int instance, int // capability_bit
+  plugin.compute = +[](const mjModel * m, mjData * d, int plugin_id, int // capability_bit
                     )
   {
-    auto * TactileSensor = reinterpret_cast<class TactileSensor *>(d->plugin_data[instance]);
-    TactileSensor->compute(m, d, instance);
+    auto * plugin_instance = reinterpret_cast<class TactileSensor *>(d->plugin_data[plugin_id]);
+    plugin_instance->compute(m, d, plugin_id);
   };
 
-  plugin.visualize = +[](const mjModel * m, mjData * d, const mjvOption * opt, mjvScene * scn, int instance)
+  plugin.visualize = +[](const mjModel * m, mjData * d, const mjvOption * opt, mjvScene * scn, int plugin_id)
   {
-    auto * TactileSensor = reinterpret_cast<class TactileSensor *>(d->plugin_data[instance]);
-    TactileSensor->visualize(m, d, opt, scn, instance);
+    auto * plugin_instance = reinterpret_cast<class TactileSensor *>(d->plugin_data[plugin_id]);
+    plugin_instance->visualize(m, d, opt, scn, plugin_id);
   };
 
   mjp_registerPlugin(&plugin);
