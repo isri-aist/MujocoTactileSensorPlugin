@@ -5,8 +5,10 @@ target_include_directories(
 target_include_directories(TactileSensor PUBLIC ${MUJOCO_INCLUDE_DIR})
 target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
 if(DEFINED CATKIN_DEVEL_PREFIX)
+  target_sources(TactileSensor PRIVATE TactileSensorRos.cpp)
   target_include_directories(TactileSensor PUBLIC ${catkin_INCLUDE_DIRS})
   target_link_libraries(TactileSensor PUBLIC ${catkin_LIBRARIES})
+  add_compile_definitions(ENABLE_ROS)
 endif()
 
 add_library(TactileSensorPlugin SHARED plugin.cpp)
