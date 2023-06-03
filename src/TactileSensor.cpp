@@ -143,8 +143,18 @@ TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_
   }
 
   // is_hex_grid
-  std::string is_hex_grid_str = std::string(mj_getPluginConfig(m, plugin_id, "is_hex_grid"));
-  bool is_hex_grid = (is_hex_grid_str == "true");
+  const char * is_hex_grid_char = mj_getPluginConfig(m, plugin_id, "is_hex_grid");
+  if(strlen(is_hex_grid_char) == 0)
+  {
+    mju_error("[TactileSensor] `is_hex_grid` is missing.");
+    return nullptr;
+  }
+  if(!(strcmp(is_hex_grid_char, "true") == 0 || strcmp(is_hex_grid_char, "false") == 0))
+  {
+    mju_error("[TactileSensor] `is_hex_grid` must be `true` or `false`.");
+    return nullptr;
+  }
+  bool is_hex_grid = (strcmp(is_hex_grid_char, "true") == 0);
 
   // Set sensor_id
   int sensor_id = 0;
@@ -220,9 +230,6 @@ TactileSensor::TactileSensor(const mjModel * m,
       }
     }
   }
-  mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
-  mju_copy(sensordata + 1 * sensor_total_num_, sensor_pos_list_, 3 * sensor_total_num_);
-  mju_copy(sensordata + 4 * sensor_total_num_, sensor_normal_list_, 3 * sensor_total_num_);
 }
 
 TactileSensor::~TactileSensor()
@@ -243,7 +250,7 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
   mjMARKSTACK;
 
   mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
-  mju_zero(sensordata, sensor_total_num_);
+  mju_zero(sensordata, m->sensor_dim[sensor_id_]);
 
   int site_bodyid = m->site_bodyid[site_id_];
   int site_body_weldid = m->body_weldid[site_bodyid];
@@ -296,6 +303,9 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
       sensordata[sensor_idx_min] += mju_dot(sensor_normal, force, 3);
     }
   }
+
+  mju_copy(sensordata + 1 * sensor_total_num_, sensor_pos_list_, 3 * sensor_total_num_);
+  mju_copy(sensordata + 4 * sensor_total_num_, sensor_normal_list_, 3 * sensor_total_num_);
 
   mjFREESTACK;
 }

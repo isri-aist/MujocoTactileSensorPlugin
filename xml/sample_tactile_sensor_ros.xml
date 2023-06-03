@@ -2,7 +2,7 @@
   <compiler autolimits="true"/>
 
   <extension>
-    <plugin plugin="MujocoTactileSensorPlugin"/>
+    <plugin plugin="MujocoTactileSensorRosPlugin"/>
   </extension>
 
   <asset>
@@ -49,12 +49,14 @@
   </worldbody>
 
   <sensor>
-    <plugin name="tactile_sensor" plugin="MujocoTactileSensorPlugin" objtype="site" objname="tactile_sensor_frame">
+    <plugin name="tactile_sensor" plugin="MujocoTactileSensorRosPlugin" objtype="site" objname="tactile_sensor_frame">
       <config key="sensor_nums" value="20 20"/>
       <config key="sensor_interval" value="0.02"/>
       <!-- <config key="surface_radius" value="0.0"/> -->
       <config key="surface_radius" value="0.5"/>
       <config key="is_hex_grid" value="true"/>
+      <config key="topic_name" value="/mujoco/tactile_sensor"/>
+      <config key="publish_rate" value="10"/>
     </plugin>
   </sensor>
 </mujoco>

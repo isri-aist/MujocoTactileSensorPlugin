@@ -2,6 +2,8 @@
 
 #include <MujocoTactileSensorPlugin/TactileSensorRos.h>
 
+#include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+
 #include <algorithm>
 #include <cstring>
 #include <iostream>
@@ -20,7 +22,8 @@ void TactileSensorRos::RegisterPlugin()
   plugin.name = "MujocoTactileSensorRosPlugin";
   plugin.capabilityflags |= mjPLUGIN_SENSOR;
 
-  const char * attributes[] = {"sensor_nums", "sensor_interval", "surface_radius", "is_hex_grid"};
+  const char * attributes[] = {"sensor_nums", "sensor_interval", "surface_radius",
+                               "is_hex_grid", "topic_name",      "publish_rate"};
   plugin.nattribute = sizeof(attributes) / sizeof(attributes[0]);
   plugin.attributes = attributes;
 
@@ -148,8 +151,41 @@ TactileSensorRos * TactileSensorRos::Create(const mjModel * m, mjData * d, int p
   }
 
   // is_hex_grid
-  std::string is_hex_grid_str = std::string(mj_getPluginConfig(m, plugin_id, "is_hex_grid"));
-  bool is_hex_grid = (is_hex_grid_str == "true");
+  const char * is_hex_grid_char = mj_getPluginConfig(m, plugin_id, "is_hex_grid");
+  if(strlen(is_hex_grid_char) == 0)
+  {
+    mju_error("[TactileSensorRos] `is_hex_grid` is missing.");
+    return nullptr;
+  }
+  if(!(strcmp(is_hex_grid_char, "true") == 0 || strcmp(is_hex_grid_char, "false") == 0))
+  {
+    mju_error("[TactileSensorRos] `is_hex_grid` must be `true` or `false`.");
+    return nullptr;
+  }
+  bool is_hex_grid = (strcmp(is_hex_grid_char, "true") == 0);
+
+  // topic_name
+  const char * topic_name_char = mj_getPluginConfig(m, plugin_id, "topic_name");
+  if(strlen(topic_name_char) == 0)
+  {
+    mju_error("[TactileSensorRos] `topic_name` is missing.");
+    return nullptr;
+  }
+  std::string topic_name = std::string(topic_name_char);
+
+  // publish_rate
+  const char * publish_rate_char = mj_getPluginConfig(m, plugin_id, "publish_rate");
+  if(strlen(publish_rate_char) == 0)
+  {
+    mju_error("[TactileSensorRos] `publish_rate` is missing.");
+    return nullptr;
+  }
+  mjtNum publish_rate = strtod(publish_rate_char, nullptr);
+  if(publish_rate <= 0)
+  {
+    mju_error("[TactileSensorRos] `publish_rate` must be positive.");
+    return nullptr;
+  }
 
   // Set sensor_id
   int sensor_id = 0;
@@ -173,7 +209,8 @@ TactileSensorRos * TactileSensorRos::Create(const mjModel * m, mjData * d, int p
 
   std::cout << "[TactileSensorRos] Create." << std::endl;
 
-  return new TactileSensorRos(m, d, sensor_id, sensor_nums.data(), sensor_interval, surface_radius, is_hex_grid);
+  return new TactileSensorRos(m, d, sensor_id, sensor_nums.data(), sensor_interval, surface_radius, is_hex_grid,
+                              topic_name, publish_rate);
 }
 
 TactileSensorRos::TactileSensorRos(const mjModel * m,
@@ -182,16 +219,51 @@ TactileSensorRos::TactileSensorRos(const mjModel * m,
                                    int sensor_nums[2],
                                    mjtNum sensor_interval,
                                    mjtNum surface_radius,
-                                   bool is_hex_grid)
-: TactileSensor(m, d, sensor_id, sensor_nums, sensor_interval, surface_radius, is_hex_grid)
+                                   bool is_hex_grid,
+                                   const std::string & topic_name,
+                                   mjtNum publish_rate)
+: TactileSensor(m, d, sensor_id, sensor_nums, sensor_interval, surface_radius, is_hex_grid),
+  publish_skip_(std::max(static_cast<int>(1.0 / (publish_rate * m->opt.timestep)), 1))
 {
+  int argc = 0;
+  char ** argv = nullptr;
+  if(!ros::isInitialized())
+  {
+    ros::init(argc, argv, "mujoco_ros", ros::init_options::NoSigintHandler);
+  }
+
+  nh_ = std::make_shared<ros::NodeHandle>();
+  pub_ = nh_->advertise<mujoco_tactile_sensor_plugin::TactileSensorData>(topic_name, 1);
 }
 
 void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
 {
   TactileSensor::compute(m, d, plugin_id);
 
-  // TODO: publish message
+  sim_cnt_++;
+  if(sim_cnt_ % publish_skip_ != 0)
+  {
+    return;
+  }
+
+  mujoco_tactile_sensor_plugin::TactileSensorData msg;
+  msg.header.stamp = ros::Time::now();
+  msg.header.frame_id = std::string(mj_id2name(m, mjOBJ_SITE, site_id_));
+  msg.forces.resize(sensor_total_num_);
+  msg.positions.resize(sensor_total_num_);
+  msg.normals.resize(sensor_total_num_);
+  mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
+  for(int sensor_idx = 0; sensor_idx < sensor_total_num_; sensor_idx++)
+  {
+    msg.forces[sensor_idx] = *(sensordata + sensor_idx);
+    msg.positions[sensor_idx].x = *(sensordata + 1 * sensor_total_num_ + 3 * sensor_idx + 0);
+    msg.positions[sensor_idx].y = *(sensordata + 1 * sensor_total_num_ + 3 * sensor_idx + 1);
+    msg.positions[sensor_idx].z = *(sensordata + 1 * sensor_total_num_ + 3 * sensor_idx + 2);
+    msg.normals[sensor_idx].x = *(sensordata + 4 * sensor_total_num_ + 3 * sensor_idx + 0);
+    msg.normals[sensor_idx].y = *(sensordata + 4 * sensor_total_num_ + 3 * sensor_idx + 1);
+    msg.normals[sensor_idx].z = *(sensordata + 4 * sensor_total_num_ + 3 * sensor_idx + 2);
+  }
+  pub_.publish(msg);
 }
 
 } // namespace mujoco::plugin::sensor

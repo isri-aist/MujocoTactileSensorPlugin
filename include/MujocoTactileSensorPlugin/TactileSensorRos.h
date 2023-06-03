@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ros/ros.h>
+
 #include <MujocoTactileSensorPlugin/TactileSensor.h>
 
 namespace mujoco::plugin::sensor
@@ -43,6 +45,8 @@ protected:
       \param sensor_interval sensor interval
       \param surface_radius sensor surface radius (0 for plane)
       \param is_hex_grid whether the sensor grid is hexagonal
+      \param topic_name topic name
+      \param publish_rate publish rate
    */
   TactileSensorRos(const mjModel * m,
                    mjData * d,
@@ -50,7 +54,22 @@ protected:
                    int sensor_nums[2],
                    mjtNum sensor_interval,
                    mjtNum surface_radius,
-                   bool is_hex_grid);
+                   bool is_hex_grid,
+                   const std::string & topic_name,
+                   mjtNum publish_rate);
+
+protected:
+  //! ROS node handle
+  std::shared_ptr<ros::NodeHandle> nh_;
+
+  //! ROS publisher
+  ros::Publisher pub_;
+
+  //! Iteration interval to skip ROS publish
+  int publish_skip_ = 0;
+
+  //! Iteration count of simulation
+  int sim_cnt_ = 0;
 };
 
 } // namespace mujoco::plugin::sensor
