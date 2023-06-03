@@ -12,6 +12,14 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>message_generation</build_depend>
+
+  <depend>roscpp</depend>
+  <depend>geometry_msgs</depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rospy</exec_depend>
+
   <doc_depend>doxygen</doc_depend>
   <doc_depend>graphviz</doc_depend>
 </package>
