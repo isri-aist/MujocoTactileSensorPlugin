@@ -20,31 +20,11 @@ jobs:
         standalone: [standalone, catkin]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Set ROS version
-        if: matrix.standalone == 'catkin'
-        run: |
-          if [ "${{ matrix.os }}" == "ubuntu-20.04" ]
-          then
-            echo "ROS_DISTRO=noetic" >> $GITHUB_ENV
-            echo "PYTHON_PACKAGE_PREFIX=python3" >> $GITHUB_ENV
-          else # if [ "${{ matrix.os }}" == "ubuntu-18.04" ]
-            echo "ROS_DISTRO=melodic" >> $GITHUB_ENV
-            echo "PYTHON_PACKAGE_PREFIX=python" >> $GITHUB_ENV
-          fi
-      - name: Install ROS
-        if: matrix.standalone == 'catkin'
-        run: |
-          set -e
-          set -x
-          sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-          wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-          sudo apt-get update -qq
-          sudo apt-get install -qq ros-${ROS_DISTRO}-ros-base ${PYTHON_PACKAGE_PREFIX}-catkin-tools ${PYTHON_PACKAGE_PREFIX}-rosdep doxygen graphviz
       - name: Download MuJoCo
         run: |
           set -e
           set -x
-          cd ${GITHUB_WORKSPACE}
+          cd ${{ github.workspace }}/.. # Note that everything under ${{ github.workspace }} is cleaned by actions/checkout.
           wget https://github.com/deepmind/mujoco/releases/download/2.3.5/mujoco-2.3.5-linux-x86_64.tar.gz
           tar -zxvf mujoco-2.3.5-linux-x86_64.tar.gz
       - name: Checkout repository code
@@ -54,16 +34,22 @@ jobs:
           submodules: recursive
       - name: Standalone build
         if: matrix.standalone == 'standalone'
+        run: |
+          set -e
+          set -x
+          ls ${{ github.workspace }}/../mujoco-2.3.5
+      - name: Standalone build
+        if: matrix.standalone == 'standalone'
         uses: jrl-umi3218/github-actions/build-cmake-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          options: "-DMUJOCO_ROOT_DIR=${GITHUB_WORKSPACE}/mujoco-2.3.5"
+          options: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.5
       - name: Catkin build
         if: matrix.standalone == 'catkin'
         uses: jrl-umi3218/github-actions/build-catkin-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          cmake-args: -DMUJOCO_ROOT_DIR=${GITHUB_WORKSPACE}/mujoco-2.3.5 # -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
+          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.5 # -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
           catkin-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           test-packages: mujoco_tactile_sensor_plugin
