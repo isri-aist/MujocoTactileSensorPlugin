@@ -14,3 +14,6 @@ geometry_msgs/Vector3[] normals
 uint8 GridSquare = 1
 uint8 GridHex = 2
 int32 grid_type
+
+# Sensor interval
+float64 sensor_interval

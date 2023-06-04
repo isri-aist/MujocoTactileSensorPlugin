@@ -182,7 +182,7 @@ TactileSensor * TactileSensor::Create(const mjModel * m, mjData * d, int plugin_
 }
 
 TactileSensor::TactileSensor(const mjModel * m,
-                             mjData * d,
+                             mjData *, // d
                              int sensor_id,
                              int sensor_nums[2],
                              mjtNum sensor_interval,

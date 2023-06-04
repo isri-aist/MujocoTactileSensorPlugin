@@ -34,8 +34,9 @@ else()
 endif()
 
 if(DEFINED CATKIN_DEVEL_PREFIX)
-  find_package(catkin REQUIRED COMPONENTS message_generation roscpp
-                                          geometry_msgs)
+  find_package(
+    catkin REQUIRED COMPONENTS message_generation roscpp geometry_msgs
+                               visualization_msgs eigen_conversions)
 
   add_message_files(FILES TactileSensorData.msg)
 
@@ -46,6 +47,8 @@ if(DEFINED CATKIN_DEVEL_PREFIX)
     message_runtime
     roscpp
     geometry_msgs
+    visualization_msgs
+    eigen_conversions
     INCLUDE_DIRS
     include
     LIBRARIES
@@ -55,3 +58,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(xml)
+
+if(DEFINED CATKIN_DEVEL_PREFIX)
+  add_subdirectory(node)
+endif()

@@ -16,6 +16,8 @@
 
   <depend>roscpp</depend>
   <depend>geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>eigen_conversions</depend>
 
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>rospy</exec_depend>
