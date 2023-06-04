@@ -55,6 +55,7 @@
       <!-- <config key="surface_radius" value="0.0"/> -->
       <config key="surface_radius" value="0.5"/>
       <config key="is_hex_grid" value="true"/>
+      <!-- <config key="is_hex_grid" value="false"/> -->
       <config key="topic_name" value="/mujoco/tactile_sensor"/>
       <config key="publish_rate" value="10"/>
     </plugin>

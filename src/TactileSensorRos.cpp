@@ -263,6 +263,14 @@ void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
     msg.normals[sensor_idx].y = *(sensordata + 4 * sensor_total_num_ + 3 * sensor_idx + 1);
     msg.normals[sensor_idx].z = *(sensordata + 4 * sensor_total_num_ + 3 * sensor_idx + 2);
   }
+  if(surface_type_ == SurfacePlane)
+  {
+    msg.surface_type = mujoco_tactile_sensor_plugin::TactileSensorData::SurfacePlane;
+  }
+  else // if(surface_type_ == SurfaceCylinder)
+  {
+    msg.surface_type = mujoco_tactile_sensor_plugin::TactileSensorData::SurfaceCylinder;
+  }
   if(grid_type_ == GridSquare)
   {
     msg.grid_type = mujoco_tactile_sensor_plugin::TactileSensorData::GridSquare;
@@ -271,6 +279,7 @@ void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
   {
     msg.grid_type = mujoco_tactile_sensor_plugin::TactileSensorData::GridHex;
   }
+  msg.sensor_interval = sensor_interval_;
   pub_.publish(msg);
 }
 

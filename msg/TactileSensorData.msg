@@ -10,6 +10,11 @@ geometry_msgs/Point[] positions
 # Array of sensor normal directions in the site frame
 geometry_msgs/Vector3[] normals
 
+# Sensor surface type
+uint8 SurfacePlane = 1
+uint8 SurfaceCylinder = 2
+int32 surface_type
+
 # Sensor grid type
 uint8 GridSquare = 1
 uint8 GridHex = 2
