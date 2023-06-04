@@ -5,11 +5,11 @@ Plugin to simulate tactile sensors in MuJoCo
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](https://isri-aist.github.io/MujocoTactileSensorPlugin/)
 
 ## Features
-- Just add some tags for the plugin to the simulation configuration file in MJCF format.
+- Since it is in plugin style, you can use it without rebuilding MuJoCo from the source.
 - Plane and cylinder surfaces are supported as sensor mounting surfaces.
 - Square and hexagonal grids are supported as sensor arrays.
 - It supports both building with cmake as a standalone project and building with catkin as a ROS package.
-- If built as a ROS package, sensor information and visualization markers can be published as a ROS topic.
+- If built as a ROS package, sensor information and visualization markers are published as ROS topics.
 
 ## Install
 
