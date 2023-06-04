@@ -48,9 +48,8 @@ $ rosdep install -y -r --from-paths src --ignore-src
 $ catkin init
 $ catkin config --extend /opt/ros/${ROS_DISTRO}
 $ catkin build mujoco_tactile_sensor_plugin -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to libtorch>
-# Add the following line to `${HOME}/.bashrc`
-#   source ${HOME}/ros/ws_mujoco/devel/setup.bash
 ```
+Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
 
 ## Examples
 ### Example as a standalone project

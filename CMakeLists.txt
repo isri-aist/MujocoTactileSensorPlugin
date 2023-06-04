@@ -34,6 +34,8 @@ else()
 endif()
 
 if(DEFINED CATKIN_DEVEL_PREFIX)
+  set(DOXYGEN_HTML_OUTPUT html)
+
   find_package(
     catkin REQUIRED COMPONENTS message_generation roscpp geometry_msgs
                                visualization_msgs eigen_conversions)
@@ -54,6 +56,8 @@ if(DEFINED CATKIN_DEVEL_PREFIX)
     LIBRARIES
     TactileSensor
     TactileSensorPlugin)
+else()
+  set(DOXYGEN_HTML_OUTPUT doxygen-html)
 endif()
 
 add_subdirectory(src)
@@ -61,4 +65,8 @@ add_subdirectory(xml)
 
 if(DEFINED CATKIN_DEVEL_PREFIX)
   add_subdirectory(node)
+endif()
+
+if(INSTALL_DOCUMENTATION)
+  add_subdirectory(doc)
 endif()
