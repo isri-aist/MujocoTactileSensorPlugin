@@ -1,0 +1,4 @@
+<map id="mujoco::plugin::sensor::TactileSensorRos" name="mujoco::plugin::sensor::TactileSensorRos">
+<area shape="rect" id="node1" title="Tactile sensor with ROS interface." alt="" coords="5,95,175,136"/>
+<area shape="rect" id="node2" href="$classmujoco_1_1plugin_1_1sensor_1_1TactileSensor.html" title="Tactile sensor." alt="" coords="5,5,175,47"/>
+</map>
