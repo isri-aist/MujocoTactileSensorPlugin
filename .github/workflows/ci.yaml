@@ -20,6 +20,19 @@ jobs:
         standalone: [standalone, catkin]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Setup environment variables
+        run: |
+          set -e
+          set -x
+          if [ "${{ matrix.os }}" == "ubuntu-20.04" ] && \
+             [ "${{ matrix.build-type }}" == "RelWithDebInfo" ] && \
+             [ "${{ matrix.standalone }}" == "catkin" ]
+          then
+            echo "UPLOAD_DOCUMENTATION=true" >> $GITHUB_ENV
+            sudo apt-get install -qq doxygen graphviz
+          else
+            echo "UPLOAD_DOCUMENTATION=false" >> $GITHUB_ENV
+          fi
       - name: Download MuJoCo
         run: |
           set -e
@@ -49,7 +62,30 @@ jobs:
         uses: jrl-umi3218/github-actions/build-catkin-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.5 # -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
+          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.5 -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
           catkin-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           test-packages: mujoco_tactile_sensor_plugin
+      - name: Upload documentation
+        if: env.UPLOAD_DOCUMENTATION == 'true'
+        run: |
+          set -e
+          set -x
+          cd ${GITHUB_WORKSPACE}/catkin_ws/src/${{ github.repository }}
+          git config --global user.name "Masaki Murooka"
+          git config --global user.email "m-murooka@aist.go.jp"
+          git remote set-url origin "https://mmurooka:${{ secrets.CI_TOKEN }}@github.com/${{ github.repository }}"
+          git fetch --depth=1 origin gh-pages:gh-pages
+          git clean -dfx
+          rm -rf cmake/
+          git checkout --quiet gh-pages
+          rm -rf doxygen/
+          cp -r ${GITHUB_WORKSPACE}/catkin_ws/build/mujoco_tactile_sensor_plugin/doc/html/ doxygen
+          git add doxygen
+          git_status=`git status -s`
+          if test -n "$git_status"; then
+            git commit --quiet -m "Update Doxygen HTML files from commit ${{ github.sha }}"
+            git push origin gh-pages
+          else
+            echo "Github pages documentation is already up-to-date."
+          fi
