@@ -129,6 +129,45 @@ $(function() {
 <div class="line">./simulate `rospack find mujoco_tactile_sensor_plugin`/xml/sample_tactile_sensor_ros.xml</div>
 <div class="line"># Terminal 2</div>
 <div class="line">roslaunch mujoco_tactile_sensor_plugin display.launch</div>
+</div><!-- fragment --><h1>Plugin</h1>
+<h2>MujocoTactileSensorPlugin</h2>
+<p>This is a ROS-independent plugin to simulate tactile sensors.</p>
+<p>The following attributes are required.</p><ul>
+<li><code>sensor_nums</code>: Number of sensors in each of the X and Y directions in a 2D array</li>
+<li><code>sensor_interval</code>: Interval between adjacent sensors [m]</li>
+<li><code>surface_radius</code>: Radius of the sensor mounting surface (zero for plane, positive for cylinder)</li>
+<li><code>is_hex_grid</code>: Whether the sensor grid is square or hexagonal (true for hexagonal, false for square)</li>
+</ul>
+<p>An example of tags to be added to the MJCF file: </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">extension</span>&gt;</div>
+<div class="line">  &lt;<span class="keywordtype">plugin</span> <span class="keyword">plugin</span>=<span class="stringliteral">&quot;MujocoTactileSensorPlugin&quot;</span>/&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">extension</span>&gt;</div>
+<div class="line">&lt;<span class="keywordtype">sensor</span>&gt;</div>
+<div class="line">  &lt;<span class="keywordtype">plugin</span> <span class="keyword">name</span>=<span class="stringliteral">&quot;tactile_sensor&quot;</span> <span class="keyword">plugin</span>=<span class="stringliteral">&quot;MujocoTactileSensorPlugin&quot;</span> <span class="keyword">objtype</span>=<span class="stringliteral">&quot;site&quot;</span> <span class="keyword">objname</span>=<span class="stringliteral">&quot;[site name]&quot;</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;sensor_nums&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;20 20&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;sensor_interval&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;0.02&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;surface_radius&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;0.5&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;is_hex_grid&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;true&quot;</span>/&gt;</div>
+<div class="line">  &lt;/<span class="keywordtype">plugin</span>&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">sensor</span>&gt;</div>
+</div><!-- fragment --><h2>MujocoTactileSensorRosPlugin</h2>
+<p>This is a plugin with ROS interface to simulate tactile sensors.</p>
+<p>In addition to the attributes of <a href="#MujocoTactileSensorPlugin">MujocoTactileSensorPlugin</a>, the following attributes are required.</p><ul>
+<li><code>topic_name</code>: ROS topic name of sensor data</li>
+<li><code>publish_rate</code>: Period to publish the topic of sensor data [Hz]</li>
+</ul>
+<p>An example of tags to be added to the MJCF file: </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">extension</span>&gt;</div>
+<div class="line">  &lt;<span class="keywordtype">plugin</span> <span class="keyword">plugin</span>=<span class="stringliteral">&quot;MujocoTactileSensorRosPlugin&quot;</span>/&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">extension</span>&gt;</div>
+<div class="line">&lt;<span class="keywordtype">sensor</span>&gt;</div>
+<div class="line">  &lt;<span class="keywordtype">plugin</span> <span class="keyword">name</span>=<span class="stringliteral">&quot;tactile_sensor&quot;</span> <span class="keyword">plugin</span>=<span class="stringliteral">&quot;MujocoTactileSensorRosPlugin&quot;</span> <span class="keyword">objtype</span>=<span class="stringliteral">&quot;site&quot;</span> <span class="keyword">objname</span>=<span class="stringliteral">&quot;[site name]&quot;</span>&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;sensor_nums&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;20 20&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;sensor_interval&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;0.02&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;surface_radius&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;0.5&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;is_hex_grid&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;true&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;topic_name&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;/mujoco/tactile_sensor&quot;</span>/&gt;</div>
+<div class="line">    &lt;<span class="keywordtype">config</span> <span class="keyword">key</span>=<span class="stringliteral">&quot;publish_rate&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;10&quot;</span>/&gt;</div>
+<div class="line">  &lt;/<span class="keywordtype">plugin</span>&gt;</div>
+<div class="line">&lt;/<span class="keywordtype">sensor</span>&gt;</div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
