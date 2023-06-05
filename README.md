@@ -4,7 +4,7 @@ Plugin to simulate tactile sensors in MuJoCo
 [![CI](https://github.com/isri-aist/MujocoTactileSensorPlugin/actions/workflows/ci.yaml/badge.svg)](https://github.com/isri-aist/MujocoTactileSensorPlugin/actions/workflows/ci.yaml)
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](https://isri-aist.github.io/MujocoTactileSensorPlugin/)
 
-https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/73f3c182-3861-4ff6-a9f9-6fcbde263ca5
+https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/840652c9-fd7f-472b-9402-442b5498d862
 
 ## Features
 - Since it is in plugin style, you can use it without rebuilding MuJoCo from the source.
