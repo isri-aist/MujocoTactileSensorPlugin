@@ -101,7 +101,7 @@ An example of tags to be added to the MJCF file:
 ### MujocoTactileSensorRosPlugin
 This is a plugin with ROS interface to simulate tactile sensors.
 
-In addition to the attributes of [MujocoTactileSensorPlugin](#MujocoTactileSensorPlugin), the following attributes are required.
+In addition to the attributes of `MujocoTactileSensorPlugin`, the following attributes are required.
 - `topic_name`: ROS topic name of sensor data
 - `publish_rate`: Period to publish the topic of sensor data [Hz]
 
