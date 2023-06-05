@@ -72,3 +72,52 @@ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
 # Terminal 2
 roslaunch mujoco_tactile_sensor_plugin display.launch
 ```
+
+## Plugin
+### MujocoTactileSensorPlugin
+This is a ROS-independent plugin to simulate tactile sensors.
+
+The following attributes are required.
+- `sensor_nums`: Number of sensors in each of the X and Y directions in a 2D array
+- `sensor_interval`: Interval between adjacent sensors [m]
+- `surface_radius`: Radius of the sensor mounting surface (zero for plane, positive for cylinder)
+- `is_hex_grid`: Whether the sensor grid is square or hexagonal (true for hexagonal, false for square)
+
+An example of tags to be added to the MJCF file:
+```xml
+<extension>
+  <plugin plugin="MujocoTactileSensorPlugin"/>
+</extension>
+<sensor>
+  <plugin name="tactile_sensor" plugin="MujocoTactileSensorPlugin" objtype="site" objname="[site name]">
+    <config key="sensor_nums" value="20 20"/>
+    <config key="sensor_interval" value="0.02"/>
+    <config key="surface_radius" value="0.5"/>
+    <config key="is_hex_grid" value="true"/>
+  </plugin>
+</sensor>
+```
+
+### MujocoTactileSensorRosPlugin
+This is a plugin with ROS interface to simulate tactile sensors.
+
+In addition to the attributes of [MujocoTactileSensorPlugin](#MujocoTactileSensorPlugin), the following attributes are required.
+- `topic_name`: ROS topic name of sensor data
+- `publish_rate`: Period to publish the topic of sensor data [Hz]
+
+An example of tags to be added to the MJCF file:
+```xml
+<extension>
+  <plugin plugin="MujocoTactileSensorRosPlugin"/>
+</extension>
+<sensor>
+  <plugin name="tactile_sensor" plugin="MujocoTactileSensorRosPlugin" objtype="site" objname="[site name]">
+    <config key="sensor_nums" value="20 20"/>
+    <config key="sensor_interval" value="0.02"/>
+    <config key="surface_radius" value="0.5"/>
+    <config key="is_hex_grid" value="true"/>
+    <config key="topic_name" value="/mujoco/tactile_sensor"/>
+    <config key="publish_rate" value="10"/>
+  </plugin>
+</sensor>
+```
