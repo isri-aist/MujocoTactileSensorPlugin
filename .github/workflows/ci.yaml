@@ -74,7 +74,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/catkin_ws/src/${{ github.repository }}
           git config --global user.name "Masaki Murooka"
           git config --global user.email "m-murooka@aist.go.jp"
-          git remote set-url origin "https://mmurooka:${{ secrets.CI_TOKEN }}@github.com/${{ github.repository }}"
+          git remote set-url origin "https://github.com/${{ github.repository }}"
           git fetch --depth=1 origin gh-pages:gh-pages
           git clean -dfx
           rm -rf cmake/
