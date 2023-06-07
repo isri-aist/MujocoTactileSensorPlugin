@@ -3,6 +3,7 @@ Plugin to simulate tactile sensors in MuJoCo
 
 [![CI](https://github.com/isri-aist/MujocoTactileSensorPlugin/actions/workflows/ci.yaml/badge.svg)](https://github.com/isri-aist/MujocoTactileSensorPlugin/actions/workflows/ci.yaml)
 [![Documentation](https://img.shields.io/badge/doxygen-online-brightgreen?logo=read-the-docs&style=flat)](https://isri-aist.github.io/MujocoTactileSensorPlugin/)
+[![LICENSE](https://img.shields.io/github/license/isri-aist/MujocoTactileSensorPlugin)](https://github.com/isri-aist/MujocoTactileSensorPlugin/blob/master/LICENSE)
 
 https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/840652c9-fd7f-472b-9402-442b5498d862
 
