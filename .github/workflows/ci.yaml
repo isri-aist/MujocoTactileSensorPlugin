@@ -47,12 +47,6 @@ jobs:
           submodules: recursive
       - name: Standalone build
         if: matrix.standalone == 'standalone'
-        run: |
-          set -e
-          set -x
-          ls ${{ github.workspace }}/../mujoco-2.3.5
-      - name: Standalone build
-        if: matrix.standalone == 'standalone'
         uses: jrl-umi3218/github-actions/build-cmake-project@master
         with:
           build-type: ${{ matrix.build-type }}
