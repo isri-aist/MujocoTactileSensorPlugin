@@ -119,17 +119,17 @@ $(function() {
 </div><!-- fragment --><p>Add <code>source ${HOME}/ros/ws_mujoco/devel/setup.bash</code> to <code>${HOME}/.bashrc</code>.</p>
 <h1>Examples</h1>
 <h2>Example as a standalone project</h2>
-<p>Assume that MuJoCo is installed in <code>${HOME}/.mujoco/mujoco-2.3.5</code> from release, and <code>MuJocoTactileSensorPlugin</code> is cloned under <code>${HOME}/src/</code>. </p><div class="fragment"><div class="line">cp ${HOME}/src/MujocoTactileSensorPlugin/build/src/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin</div>
-<div class="line">cd ${HOME}/.mujoco/mujoco-2.3.5/bin</div>
-<div class="line">./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml</div>
+<p>Assume that MuJoCo is installed in <code>${HOME}/.mujoco/mujoco-2.3.5</code> from release, and <code>MuJocoTactileSensorPlugin</code> is cloned under <code>${HOME}/src/</code>. </p><div class="fragment"><div class="line">$ cp ${HOME}/src/MujocoTactileSensorPlugin/build/src/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin</div>
+<div class="line">$ cd ${HOME}/.mujoco/mujoco-2.3.5/bin</div>
+<div class="line">$ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml</div>
 </div><!-- fragment --><h2>Example as a ROS package</h2>
 <p>Assume that MuJoCo is installed in <code>${HOME}/.mujoco/mujoco-2.3.5</code> from release, and the path to the catkin workspace is <code>${HOME}/ros/ws_mujoco</code>. </p><div class="fragment"><div class="line"># Terminal 1</div>
-<div class="line">cp ${HOME}/ros/ws_mujoco/devel/lib/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin</div>
-<div class="line">cd ${HOME}/.mujoco/mujoco-2.3.5/bin</div>
-<div class="line">./simulate `rospack find mujoco_tactile_sensor_plugin`/xml/sample_tactile_sensor_ros.xml</div>
+<div class="line">$ cp ${HOME}/ros/ws_mujoco/devel/lib/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin</div>
+<div class="line">$ cd ${HOME}/.mujoco/mujoco-2.3.5/bin</div>
+<div class="line">$ ./simulate `rospack find mujoco_tactile_sensor_plugin`/xml/sample_tactile_sensor_ros.xml</div>
 <div class="line"># Terminal 2</div>
-<div class="line">roslaunch mujoco_tactile_sensor_plugin display.launch</div>
-</div><!-- fragment --><h1>Plugin</h1>
+<div class="line">$ roslaunch mujoco_tactile_sensor_plugin display.launch</div>
+</div><!-- fragment --><h1>Plugins</h1>
 <h2>MujocoTactileSensorPlugin</h2>
 <p>This is a ROS-independent plugin to simulate tactile sensors.</p>
 <p>The following attributes are required.</p><ul>
