@@ -16,6 +16,15 @@ add_library(TactileSensorPlugin SHARED plugin.cpp)
 target_include_directories(TactileSensorPlugin PRIVATE ${MUJOCO_INCLUDE_DIR})
 target_link_libraries(TactileSensorPlugin PUBLIC TactileSensor)
 
+if(DEFINED CATKIN_DEVEL_PREFIX)
+  set(MUJOCO_PLUGIN_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+  set_target_properties(
+    TactileSensorPlugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                   ${MUJOCO_PLUGIN_OUTPUT_DIR})
+  catkin_add_env_hooks(99.mujoco_tactile_sensor_plugin SHELLS sh DIRECTORY
+                       ${PROJECT_SOURCE_DIR}/env-hooks)
+endif()
+
 install(
   TARGETS TactileSensor TactileSensorPlugin
   EXPORT "${TARGETS_EXPORT_NAME}"

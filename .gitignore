@@ -7,3 +7,5 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
+
+src/lib
