@@ -22,8 +22,8 @@ void TactileSensorRos::RegisterPlugin()
   plugin.name = "MujocoTactileSensorRosPlugin";
   plugin.capabilityflags |= mjPLUGIN_SENSOR;
 
-  const char * attributes[] = {"sensor_nums", "sensor_interval", "surface_radius",
-                               "is_hex_grid", "topic_name",      "publish_rate"};
+  const char * attributes[] = {"sensor_nums", "sensor_interval", "surface_radius", "is_hex_grid",
+                               "frame_id",    "topic_name",      "publish_rate"};
   plugin.nattribute = sizeof(attributes) / sizeof(attributes[0]);
   plugin.attributes = attributes;
 
@@ -164,6 +164,14 @@ TactileSensorRos * TactileSensorRos::Create(const mjModel * m, mjData * d, int p
   }
   bool is_hex_grid = (strcmp(is_hex_grid_char, "true") == 0);
 
+  // frame_id
+  std::string frame_id = "";
+  const char * frame_id_char = mj_getPluginConfig(m, plugin_id, "frame_id");
+  if(strlen(frame_id_char) > 0)
+  {
+    frame_id = std::string(frame_id_char);
+  }
+
   // topic_name
   const char * topic_name_char = mj_getPluginConfig(m, plugin_id, "topic_name");
   if(strlen(topic_name_char) == 0)
@@ -210,7 +218,7 @@ TactileSensorRos * TactileSensorRos::Create(const mjModel * m, mjData * d, int p
   std::cout << "[TactileSensorRos] Create." << std::endl;
 
   return new TactileSensorRos(m, d, sensor_id, sensor_nums.data(), sensor_interval, surface_radius, is_hex_grid,
-                              topic_name, publish_rate);
+                              frame_id, topic_name, publish_rate);
 }
 
 TactileSensorRos::TactileSensorRos(const mjModel * m,
@@ -220,11 +228,17 @@ TactileSensorRos::TactileSensorRos(const mjModel * m,
                                    mjtNum sensor_interval,
                                    mjtNum surface_radius,
                                    bool is_hex_grid,
+                                   const std::string & frame_id,
                                    const std::string & topic_name,
                                    mjtNum publish_rate)
-: TactileSensor(m, d, sensor_id, sensor_nums, sensor_interval, surface_radius, is_hex_grid),
+: TactileSensor(m, d, sensor_id, sensor_nums, sensor_interval, surface_radius, is_hex_grid), frame_id_(frame_id),
   publish_skip_(std::max(static_cast<int>(1.0 / (publish_rate * m->opt.timestep)), 1))
 {
+  if(frame_id_.empty())
+  {
+    frame_id_ = std::string(mj_id2name(m, mjOBJ_SITE, site_id_));
+  }
+
   int argc = 0;
   char ** argv = nullptr;
   if(!ros::isInitialized())
@@ -248,7 +262,7 @@ void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
 
   mujoco_tactile_sensor_plugin::TactileSensorData msg;
   msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = std::string(mj_id2name(m, mjOBJ_SITE, site_id_));
+  msg.header.frame_id = frame_id_;
   msg.forces.resize(sensor_total_num_);
   msg.positions.resize(sensor_total_num_);
   msg.normals.resize(sensor_total_num_);

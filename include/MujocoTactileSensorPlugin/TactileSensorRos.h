@@ -45,6 +45,7 @@ protected:
       \param sensor_interval sensor interval
       \param surface_radius sensor surface radius (0 for plane)
       \param is_hex_grid whether the sensor grid is hexagonal
+      \param frame_id frame ID of topic
       \param topic_name topic name
       \param publish_rate publish rate
    */
@@ -55,10 +56,14 @@ protected:
                    mjtNum sensor_interval,
                    mjtNum surface_radius,
                    bool is_hex_grid,
+                   const std::string & frame_id,
                    const std::string & topic_name,
                    mjtNum publish_rate);
 
 protected:
+  //! Frame ID of topic
+  std::string frame_id_ = "";
+
   //! ROS node handle
   std::shared_ptr<ros::NodeHandle> nh_;
 
