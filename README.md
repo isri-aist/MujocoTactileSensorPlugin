@@ -104,8 +104,8 @@ This is a plugin with ROS interface to simulate tactile sensors.
 This is only available when built as a ROS package.
 
 In addition to the attributes of `MujocoTactileSensorPlugin`, the following attributes are required.
-- `frame_id`: Frame ID of ROS topic
-- `topic_name`: ROS topic name of sensor data (Site name is used if omitted)
+- `frame_id`: Frame ID of ROS topic (Site name is used if omitted)
+- `topic_name`: ROS topic name of sensor data
 - `publish_rate`: Period to publish the topic of sensor data [Hz]
 
 An example of tags to be added to the MJCF file:
