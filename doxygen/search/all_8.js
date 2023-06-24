@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['visualize_34',['visualize',['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensor.html#a355b927ccb80d38777d0c4b0a95c2f81',1,'mujoco::plugin::sensor::TactileSensor']]]
+  ['tactilesensor_31',['TactileSensor',['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensor.html',1,'mujoco::plugin::sensor::TactileSensor'],['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensor.html#a3d9e1fea874fe7f82134c1b90c40636f',1,'mujoco::plugin::sensor::TactileSensor::TactileSensor(TactileSensor &amp;&amp;)=default'],['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensor.html#a81519d93ab165197607ac5fc4e5ae0b4',1,'mujoco::plugin::sensor::TactileSensor::TactileSensor(const mjModel *m, mjData *d, int sensor_id, int sensor_nums[2], mjtNum sensor_interval, mjtNum surface_radius, bool is_hex_grid)']]],
+  ['tactilesensor_2eh_32',['TactileSensor.h',['../TactileSensor_8h.html',1,'']]],
+  ['tactilesensorros_33',['TactileSensorRos',['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensorRos.html',1,'mujoco::plugin::sensor::TactileSensorRos'],['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensorRos.html#a7dc0263704cb7d32c62cb2ff307cf8b2',1,'mujoco::plugin::sensor::TactileSensorRos::TactileSensorRos(TactileSensorRos &amp;&amp;)=default'],['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensorRos.html#a0e243e3cad12a7de191c4b9ffeb5c983',1,'mujoco::plugin::sensor::TactileSensorRos::TactileSensorRos(const mjModel *m, mjData *d, int sensor_id, int sensor_nums[2], mjtNum sensor_interval, mjtNum surface_radius, bool is_hex_grid, const std::string &amp;frame_id, const std::string &amp;topic_name, mjtNum publish_rate)']]],
+  ['tactilesensorros_2eh_34',['TactileSensorRos.h',['../TactileSensorRos_8h.html',1,'']]]
 ];

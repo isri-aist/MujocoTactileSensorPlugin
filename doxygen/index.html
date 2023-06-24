@@ -152,7 +152,8 @@ $(function() {
 </div><!-- fragment --><h2>MujocoTactileSensorRosPlugin</h2>
 <p>This is a plugin with ROS interface to simulate tactile sensors. This is only available when built as a ROS package.</p>
 <p>In addition to the attributes of <code>MujocoTactileSensorPlugin</code>, the following attributes are required.</p><ul>
-<li><code>topic_name</code>: ROS topic name of sensor data</li>
+<li><code>frame_id</code>: Frame ID of ROS topic</li>
+<li><code>topic_name</code>: ROS topic name of sensor data (Site name is used if omitted)</li>
 <li><code>publish_rate</code>: Period to publish the topic of sensor data [Hz]</li>
 </ul>
 <p>An example of tags to be added to the MJCF file: </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">extension</span>&gt;</div>

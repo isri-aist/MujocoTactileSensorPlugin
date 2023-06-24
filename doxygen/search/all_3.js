@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['nh_5f_11',['nh_',['../classmujoco_1_1plugin_1_1sensor_1_1TactileSensorRos.html#a6986d081bdba60d605cdfd838ad732a8',1,'mujoco::plugin::sensor::TactileSensorRos']]]
+  ['mujoco_9',['mujoco',['../namespacemujoco.html',1,'']]],
+  ['plugin_10',['plugin',['../namespacemujoco_1_1plugin.html',1,'mujoco']]],
+  ['sensor_11',['sensor',['../namespacemujoco_1_1plugin_1_1sensor.html',1,'mujoco::plugin']]]
 ];
