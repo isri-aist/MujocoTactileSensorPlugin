@@ -105,6 +105,7 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::TactileSensor
       sensor_marker.pose.orientation.y = quat.y();
       sensor_marker.pose.orientation.z = quat.z();
     }
+    sensor_marker.frame_locked = true;
     marker_arr_msg.markers.push_back(sensor_marker);
   }
 
