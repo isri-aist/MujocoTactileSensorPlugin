@@ -71,11 +71,11 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::TactileSensor
     sensor_marker.color.a = 0.5f;
     if(msg->forces[sensor_idx] > 0)
     {
-      sensor_marker.color.r = static_cast<float>(1.0 - msg->forces[sensor_idx] / force_max);
+      sensor_marker.color.r = static_cast<float>(0.7 * (1.0 - msg->forces[sensor_idx] / force_max));
     }
     else if(msg->forces[sensor_idx] < 0)
     {
-      sensor_marker.color.g = static_cast<float>(1.0 + msg->forces[sensor_idx] / force_max);
+      sensor_marker.color.g = static_cast<float>(0.7 * (1.0 + msg->forces[sensor_idx] / force_max));
     }
     if(msg->grid_type == mujoco_tactile_sensor_plugin::TactileSensorData::GridSquare)
     {

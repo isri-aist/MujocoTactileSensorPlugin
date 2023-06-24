@@ -357,11 +357,11 @@ void TactileSensor::visualize(const mjModel * m,
     float rgba[4] = {1, 1, 1, 0.5};
     if(sensordata[sensor_idx] > 0)
     {
-      rgba[0] = static_cast<float>(1.0 - sensordata[sensor_idx] / force_max);
+      rgba[0] = static_cast<float>(0.7 * (1.0 - sensordata[sensor_idx] / force_max));
     }
     else if(sensordata[sensor_idx] < 0)
     {
-      rgba[1] = static_cast<float>(1.0 + sensordata[sensor_idx] / force_max);
+      rgba[1] = static_cast<float>(0.7 * (1.0 + sensordata[sensor_idx] / force_max));
     }
 
     mjvGeom * sensor_geom = scn->geoms + scn->ngeom;
