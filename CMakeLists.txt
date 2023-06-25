@@ -54,8 +54,7 @@ if(DEFINED CATKIN_DEVEL_PREFIX)
     INCLUDE_DIRS
     include
     LIBRARIES
-    TactileSensor
-    TactileSensorPlugin)
+    TactileSensor)
 else()
   set(DOXYGEN_HTML_OUTPUT doxygen-html)
 endif()
