@@ -292,9 +292,8 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
       mju_rotVecMatT(force, force, d->contact[contact_idx].frame);
       mju_rotVecMatT(force, force, site_mat);
 
-      // Forces point from the smaller to larger body, so flip sign if
-      // the parent body has smaller id
-      if(site_bodyid < mjMAX(contact_bodyid1, contact_bodyid2))
+      // Reverse the force direction so that the force is toward the site body
+      if(site_body_weldid == contact_bodyid1)
       {
         mju_scl3(force, force, -1);
       }
