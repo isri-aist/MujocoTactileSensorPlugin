@@ -7,6 +7,18 @@
     <remap from="marker_arr" to="/mujoco/tactile_sensor/marker_arr"/>
   </node>
 
+  <node pkg="mujoco_tactile_sensor_plugin" type="MarkerPublisher" name="marker_publisher_left"
+        output="screen">
+    <remap from="tactile_sensor" to="/mujoco/tactile_sensor/left"/>
+    <remap from="marker_arr" to="/mujoco/tactile_sensor/marker_arr/left"/>
+  </node>
+
+  <node pkg="mujoco_tactile_sensor_plugin" type="MarkerPublisher" name="marker_publisher_right"
+        output="screen">
+    <remap from="tactile_sensor" to="/mujoco/tactile_sensor/right"/>
+    <remap from="marker_arr" to="/mujoco/tactile_sensor/marker_arr/right"/>
+  </node>
+
   <node if="$(arg run_rviz)"
         pkg="rviz" type="rviz" name="$(anon rviz)"
         args="-d $(find mujoco_tactile_sensor_plugin)/launch/display.rviz" />
