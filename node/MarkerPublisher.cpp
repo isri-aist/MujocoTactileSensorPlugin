@@ -65,17 +65,18 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::TactileSensor
     {
       sensor_marker.type = visualization_msgs::Marker::CYLINDER;
     }
-    sensor_marker.color.r = 1.0f;
+    sensor_marker.color.r = 0.0f;
     sensor_marker.color.g = 1.0f;
-    sensor_marker.color.b = 0.8f;
-    sensor_marker.color.a = 0.5f;
+    sensor_marker.color.b = 0.3f;
+    sensor_marker.color.a = 0.8f;
     if(msg->forces[sensor_idx] > 0)
     {
-      sensor_marker.color.r = static_cast<float>(0.7 * (1.0 - msg->forces[sensor_idx] / force_max));
+      sensor_marker.color.r = 0.3f + static_cast<float>(0.7 * msg->forces[sensor_idx] / force_max);
+      sensor_marker.color.g = 0.3f + static_cast<float>(0.7 * (1.0 - msg->forces[sensor_idx] / force_max));
     }
     else if(msg->forces[sensor_idx] < 0)
     {
-      sensor_marker.color.g = static_cast<float>(0.7 * (1.0 + msg->forces[sensor_idx] / force_max));
+      // sensor_marker.color.g = static_cast<float>(0.7 * (1.0 + msg->forces[sensor_idx] / force_max));
     }
     if(msg->grid_type == mujoco_tactile_sensor_plugin::TactileSensorData::GridSquare)
     {
