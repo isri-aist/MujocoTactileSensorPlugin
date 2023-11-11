@@ -26,7 +26,9 @@ jobs:
           set -x
           if [ "${{ matrix.os }}" == "ubuntu-20.04" ] && \
              [ "${{ matrix.build-type }}" == "RelWithDebInfo" ] && \
-             [ "${{ matrix.standalone }}" == "catkin" ]
+             [ "${{ matrix.standalone }}" == "catkin" ] &&  \
+             [ "${{ github.repository_owner }}" == "isri-aist" ] && \
+             [ "${{ github.ref }}" == "refs/heads/main" ]
           then
             echo "UPLOAD_DOCUMENTATION=true" >> $GITHUB_ENV
             sudo apt-get install -qq doxygen graphviz
