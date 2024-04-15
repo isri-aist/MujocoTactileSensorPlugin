@@ -23,11 +23,11 @@ repos:
   - id: mixed-line-ending
   - id: trailing-whitespace
 - repo: https://github.com/psf/black
-  rev: 24.3.0
+  rev: 24.4.0
   hooks:
   - id: black
 - repo: https://github.com/MarcoGorelli/cython-lint
-  rev: v0.16.0
+  rev: v0.16.2
   hooks:
   - id: cython-lint
   - id: double-quote-cython-strings
