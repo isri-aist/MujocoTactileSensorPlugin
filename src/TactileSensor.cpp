@@ -247,7 +247,7 @@ void TactileSensor::reset(const mjModel *, // m
 void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
 )
 {
-  mjMARKSTACK;
+  mj_markStack(d);
 
   mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
   mju_zero(sensordata, m->sensor_dim[sensor_id_]);
@@ -306,7 +306,7 @@ void TactileSensor::compute(const mjModel * m, mjData * d, int // plugin_id
   mju_copy(sensordata + 1 * sensor_total_num_, sensor_pos_list_, 3 * sensor_total_num_);
   mju_copy(sensordata + 4 * sensor_total_num_, sensor_normal_list_, 3 * sensor_total_num_);
 
-  mjFREESTACK;
+  mj_freeStack(d);
 }
 
 void TactileSensor::visualize(const mjModel * m,
@@ -316,7 +316,7 @@ void TactileSensor::visualize(const mjModel * m,
                               int // plugin_id
 )
 {
-  mjMARKSTACK;
+  mj_markStack(d);
 
   mjtNum * sensordata = d->sensordata + m->sensor_adr[sensor_id_];
 
@@ -386,7 +386,7 @@ void TactileSensor::visualize(const mjModel * m,
     scn->ngeom++;
   }
 
-  mjFREESTACK;
+  mj_freeStack(d);
 }
 
 } // namespace mujoco::plugin::sensor
