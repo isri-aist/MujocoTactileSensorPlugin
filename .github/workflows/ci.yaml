@@ -17,6 +17,14 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         build-type: [Debug, RelWithDebInfo]
+        mujoco-version: [3.0.0]
+        include:
+          - os: ubuntu-20.04
+            build-type: RelWithDebInfo
+            mujoco-version: 2.3.5 # 2.3.7
+          - os: ubuntu-20.04
+            build-type: RelWithDebInfo
+            mujoco-version: 2.3.7 # 2.3.7
         standalone: [standalone, catkin]
     runs-on: ${{ matrix.os }}
     steps:
@@ -28,7 +36,8 @@ jobs:
              [ "${{ matrix.build-type }}" == "RelWithDebInfo" ] && \
              [ "${{ matrix.standalone }}" == "catkin" ] &&  \
              [ "${{ github.repository_owner }}" == "isri-aist" ] && \
-             [ "${{ github.ref }}" == "refs/heads/main" ]
+             [ "${{ github.ref }}" == "refs/heads/main" ] && \
+             [ "${{ matrix.mujoco-version }}" == "2.3.7"]
           then
             echo "UPLOAD_DOCUMENTATION=true" >> $GITHUB_ENV
             sudo apt-get install -qq doxygen graphviz
@@ -40,8 +49,8 @@ jobs:
           set -e
           set -x
           cd ${{ github.workspace }}/.. # Note that everything under ${{ github.workspace }} is cleaned by actions/checkout.
-          wget https://github.com/deepmind/mujoco/releases/download/2.3.7/mujoco-2.3.7-linux-x86_64.tar.gz
-          tar -zxvf mujoco-2.3.7-linux-x86_64.tar.gz
+          wget https://github.com/deepmind/mujoco/releases/download/${{ matrix.mujoco-version }}/mujoco-${{ matrix.mujoco-version }}-linux-x86_64.tar.gz
+          tar -zxvf mujoco-${{ matrix.mujoco-version }}-linux-x86_64.tar.gz
       - name: Checkout repository code
         if: matrix.standalone == 'standalone'
         uses: actions/checkout@v3
@@ -52,13 +61,13 @@ jobs:
         uses: jrl-umi3218/github-actions/build-cmake-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          options: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.7
+          options: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }}
       - name: Catkin build
         if: matrix.standalone == 'catkin'
         uses: jrl-umi3218/github-actions/build-catkin-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-2.3.7 -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
+          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
           catkin-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           test-packages: mujoco_tactile_sensor_plugin
