@@ -17,15 +17,17 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         build-type: [Debug, RelWithDebInfo]
+        standalone: [standalone, catkin]
         mujoco-version: [3.0.0]
         include:
           - os: ubuntu-20.04
             build-type: RelWithDebInfo
             mujoco-version: 2.3.5 # 2.3.7
+            standalone: catkin
           - os: ubuntu-20.04
             build-type: RelWithDebInfo
             mujoco-version: 2.3.7 # 2.3.7
-        standalone: [standalone, catkin]
+            standalone: catkin
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup environment variables
