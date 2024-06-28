@@ -37,7 +37,7 @@ jobs:
              [ "${{ matrix.standalone }}" == "catkin" ] &&  \
              [ "${{ github.repository_owner }}" == "isri-aist" ] && \
              [ "${{ github.ref }}" == "refs/heads/main" ] && \
-             [ "${{ matrix.mujoco-version }}" == "2.3.7"]
+             [ "${{ matrix.mujoco-version }}" == "3.0.0"]
           then
             echo "UPLOAD_DOCUMENTATION=true" >> $GITHUB_ENV
             sudo apt-get install -qq doxygen graphviz
