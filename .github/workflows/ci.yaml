@@ -22,11 +22,11 @@ jobs:
         include:
           - os: ubuntu-20.04
             build-type: RelWithDebInfo
-            mujoco-version: 2.3.5 # 2.3.7
+            mujoco-version: 2.3.5 # 3.0.0
             standalone: catkin
           - os: ubuntu-20.04
             build-type: RelWithDebInfo
-            mujoco-version: 2.3.7 # 2.3.7
+            mujoco-version: 2.3.7 # 3.0.0
             standalone: catkin
     runs-on: ${{ matrix.os }}
     steps:
