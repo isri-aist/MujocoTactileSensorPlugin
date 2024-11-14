@@ -18,14 +18,19 @@ protected:
 
 protected:
   ros::NodeHandle nh_;
+  ros::NodeHandle pnh_ = ros::NodeHandle("~");
   ros::Subscriber tactile_sensor_sub_;
   ros::Publisher marker_arr_pub_;
+
+  float marker_color_alpha_ = 0.5f;
 };
 
 MarkerPublisher::MarkerPublisher()
 {
   tactile_sensor_sub_ = nh_.subscribe("tactile_sensor", 1, &MarkerPublisher::callback, this);
   marker_arr_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("marker_arr", 1, true);
+
+  pnh_.getParam("marker_color_alpha", marker_color_alpha_);
 }
 
 void MarkerPublisher::runLoop()
@@ -69,7 +74,7 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::TactileSensor
     sensor_marker.color.r = 1.0f;
     sensor_marker.color.g = 1.0f;
     sensor_marker.color.b = 0.8f;
-    sensor_marker.color.a = 0.5f;
+    sensor_marker.color.a = marker_color_alpha_;
     if(msg->forces[sensor_idx] > 0)
     {
       sensor_marker.color.r = static_cast<float>(0.7 * (1.0 - msg->forces[sensor_idx] / force_max));
