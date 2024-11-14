@@ -38,12 +38,13 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::TactileSensor
   // Instantiate marker array
   visualization_msgs::MarkerArray marker_arr_msg;
 
-  // Delete marker
-  visualization_msgs::Marker del_marker;
-  del_marker.action = visualization_msgs::Marker::DELETEALL;
-  del_marker.header = msg->header;
-  del_marker.id = static_cast<int>(marker_arr_msg.markers.size());
-  marker_arr_msg.markers.push_back(del_marker);
+  // \todo Markers visualized in Rviz may blink when DELETEALL is added
+  // // Delete marker
+  // visualization_msgs::Marker del_marker;
+  // del_marker.action = visualization_msgs::Marker::DELETEALL;
+  // del_marker.header = msg->header;
+  // del_marker.id = static_cast<int>(marker_arr_msg.markers.size());
+  // marker_arr_msg.markers.push_back(del_marker);
 
   // Sensor marker
   double force_max = 0.0;
