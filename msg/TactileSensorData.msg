@@ -11,13 +11,13 @@ geometry_msgs/Point[] positions
 geometry_msgs/Vector3[] normals
 
 # Sensor surface type
-uint8 SurfacePlane = 1
-uint8 SurfaceCylinder = 2
+uint8 surface_plane
+uint8 surface_cylinder
 int32 surface_type
 
 # Sensor grid type
-uint8 GridSquare = 1
-uint8 GridHex = 2
+uint8 grid_square
+uint8 grid_hex
 int32 grid_type
 
 # Sensor interval
