@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(CXX_DISABLE_WERROR ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
-set(USE_ROS2 ON)
 
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 
@@ -34,7 +33,7 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-if (USE_ROS2)
+if (DEFINED USE_ROS2)
   find_package(ament_cmake REQUIRED)
   find_package(std_msgs REQUIRED)
   find_package(geometry_msgs REQUIRED)
@@ -57,7 +56,7 @@ endif()
 add_subdirectory(src)
 add_subdirectory(xml)
 
-# if(USE_ROS2)
+# if (DEFINED USE_ROS2)
 #   add_subdirectory(node)
 # endif()
 

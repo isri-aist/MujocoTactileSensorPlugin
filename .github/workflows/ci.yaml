@@ -63,13 +63,13 @@ jobs:
         uses: jrl-umi3218/github-actions/build-cmake-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          options: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DUSE_ROS2=OFF
+          options: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }}
       - name: Colcon build
         if: matrix.standalone == 'colcon'
         uses: jrl-umi3218/github-actions/build-colcon-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
+          cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }} -DUSE_ROS2
           catkin-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           skip-test: true
