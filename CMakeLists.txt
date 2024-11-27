@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.22)
 
 set(PROJECT_NAME mujoco_tactile_sensor_plugin)
 set(PROJECT_GENERATED_HEADERS_SKIP_DEPRECATED ON)
@@ -10,11 +10,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(CXX_DISABLE_WERROR ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
+set(USE_ROS2 ON)
 
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 
 include(cmake/base.cmake)
-project(${PROJECT_NAME} LANGUAGES CXX)
+project(${PROJECT_NAME})
 
 # MuJoCo
 if(NOT DEFINED MUJOCO_ROOT_DIR)
@@ -33,28 +34,22 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-if(DEFINED CATKIN_DEVEL_PREFIX)
-  set(DOXYGEN_HTML_OUTPUT html)
+if (USE_ROS2)
+  find_package(ament_cmake REQUIRED)
+  find_package(std_msgs REQUIRED)
+  find_package(geometry_msgs REQUIRED)
+  find_package(visualization_msgs REQUIRED)
+  find_package(builtin_interfaces REQUIRED) 
+  find_package(rosidl_default_generators REQUIRED)
 
-  find_package(
-    catkin REQUIRED COMPONENTS message_generation roscpp geometry_msgs
-                               visualization_msgs eigen_conversions)
+  rosidl_generate_interfaces(${PROJECT_NAME}
+      "msg/TactileSensorData.msg"
+      DEPENDENCIES std_msgs geometry_msgs builtin_interfaces
+  )
 
-  add_message_files(FILES TactileSensorData.msg)
+  ament_export_dependencies(rosidl_default_runtime)
 
-  generate_messages(DEPENDENCIES geometry_msgs)
-
-  catkin_package(
-    CATKIN_DEPENDS
-    message_runtime
-    roscpp
-    geometry_msgs
-    visualization_msgs
-    eigen_conversions
-    INCLUDE_DIRS
-    include
-    LIBRARIES
-    TactileSensor)
+  ament_package()
 else()
   set(DOXYGEN_HTML_OUTPUT doxygen-html)
 endif()
@@ -62,9 +57,9 @@ endif()
 add_subdirectory(src)
 add_subdirectory(xml)
 
-if(DEFINED CATKIN_DEVEL_PREFIX)
-  add_subdirectory(node)
-endif()
+# if(USE_ROS2)
+#   add_subdirectory(node)
+# endif()
 
 if(INSTALL_DOCUMENTATION)
   add_subdirectory(doc)
