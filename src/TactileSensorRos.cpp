@@ -2,7 +2,7 @@
 
 #include <MujocoTactileSensorPlugin/TactileSensorRos.h>
 
-#include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+#include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
 
 #include <algorithm>
 #include <cstring>
@@ -241,13 +241,12 @@ TactileSensorRos::TactileSensorRos(const mjModel * m,
 
   int argc = 0;
   char ** argv = nullptr;
-  if(!ros::isInitialized())
-  {
-    ros::init(argc, argv, "mujoco_ros", ros::init_options::NoSigintHandler);
-  }
 
-  nh_ = std::make_shared<ros::NodeHandle>();
-  pub_ = nh_->advertise<mujoco_tactile_sensor_plugin::TactileSensorData>(topic_name, 1);
+  rclcpp::init(argc, argv);
+  rclcpp::NodeOptions node_options;
+  
+  nh_ = rclcpp::Node::make_shared("mujoco_ros", node_options);
+  pub_ = nh_->create_publisher<mujoco_tactile_sensor_plugin::msg::TactileSensorData>(topic_name, 1);
 }
 
 void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
@@ -260,8 +259,8 @@ void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
     return;
   }
 
-  mujoco_tactile_sensor_plugin::TactileSensorData msg;
-  msg.header.stamp = ros::Time::now();
+  mujoco_tactile_sensor_plugin::msg::TactileSensorData msg;
+  msg.header.stamp = nh_->get_clock()->now();
   msg.header.frame_id = frame_id_;
   msg.forces.resize(sensor_total_num_);
   msg.positions.resize(sensor_total_num_);
@@ -279,22 +278,22 @@ void TactileSensorRos::compute(const mjModel * m, mjData * d, int plugin_id)
   }
   if(surface_type_ == SurfacePlane)
   {
-    msg.surface_type = mujoco_tactile_sensor_plugin::TactileSensorData::SurfacePlane;
+    msg.surface_type = msg.surface_plane;
   }
   else // if(surface_type_ == SurfaceCylinder)
   {
-    msg.surface_type = mujoco_tactile_sensor_plugin::TactileSensorData::SurfaceCylinder;
+    msg.surface_type = msg.surface_cylinder;
   }
   if(grid_type_ == GridSquare)
   {
-    msg.grid_type = mujoco_tactile_sensor_plugin::TactileSensorData::GridSquare;
+    msg.grid_type = msg.grid_square;
   }
   else // if(grid_type_ == GridHex)
   {
-    msg.grid_type = mujoco_tactile_sensor_plugin::TactileSensorData::GridHex;
+    msg.grid_type = msg.grid_hex;
   }
   msg.sensor_interval = sensor_interval_;
-  pub_.publish(msg);
+  pub_->publish(msg);
 }
 
 } // namespace mujoco::plugin::sensor
