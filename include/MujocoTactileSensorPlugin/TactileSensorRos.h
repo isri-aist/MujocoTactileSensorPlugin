@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ros/ros.h>
-
+#include <rclcpp/rclcpp.hpp>
+#include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
 #include <MujocoTactileSensorPlugin/TactileSensor.h>
 
 namespace mujoco::plugin::sensor
@@ -65,10 +65,10 @@ protected:
   std::string frame_id_ = "";
 
   //! ROS node handle
-  std::shared_ptr<ros::NodeHandle> nh_;
+  rclcpp::Node::SharedPtr nh_;
 
   //! ROS publisher
-  ros::Publisher pub_;
+  rclcpp::Publisher<mujoco_tactile_sensor_plugin::msg::TactileSensorData>::SharedPtr pub_;
 
   //! Iteration interval to skip ROS publish
   int publish_skip_ = 0;

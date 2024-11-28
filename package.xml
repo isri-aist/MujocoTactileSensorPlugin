@@ -15,6 +15,7 @@
 
   <depend>geometry_msgs</depend>
   <depend>visualization_msgs</depend>
+  <depend>tf2_eigen</depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   

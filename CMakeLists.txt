@@ -33,17 +33,24 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-if(DEFINED ENV{COLCON_CURRENT_PREFIX})
+if(DEFINED USE_ROS2)
   find_package(ament_cmake REQUIRED)
+  find_package(rclcpp REQUIRED)
   find_package(std_msgs REQUIRED)
   find_package(geometry_msgs REQUIRED)
   find_package(visualization_msgs REQUIRED)
   find_package(builtin_interfaces REQUIRED) 
   find_package(rosidl_default_generators REQUIRED)
+  find_package(tf2_eigen REQUIRED)
 
   rosidl_generate_interfaces(${PROJECT_NAME}
       "msg/TactileSensorData.msg"
       DEPENDENCIES std_msgs geometry_msgs builtin_interfaces
+  )
+
+  install(
+    DIRECTORY launch
+    DESTINATION share/${PROJECT_NAME}
   )
 
   ament_export_dependencies(rosidl_default_runtime)
@@ -56,9 +63,9 @@ endif()
 add_subdirectory(src)
 add_subdirectory(xml)
 
-# if(DEFINED ENV{COLCON_CURRENT_PREFIX})
-#   add_subdirectory(node)
-# endif()
+if(DEFINED USE_ROS2)
+  add_subdirectory(node)
+endif()
 
 if(INSTALL_DOCUMENTATION)
   add_subdirectory(doc)
