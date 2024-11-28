@@ -33,7 +33,7 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-if (DEFINED USE_ROS2)
+if(DEFINED ENV{COLCON_CURRENT_PREFIX})
   find_package(ament_cmake REQUIRED)
   find_package(std_msgs REQUIRED)
   find_package(geometry_msgs REQUIRED)
@@ -56,7 +56,7 @@ endif()
 add_subdirectory(src)
 add_subdirectory(xml)
 
-# if (DEFINED USE_ROS2)
+# if(DEFINED ENV{COLCON_CURRENT_PREFIX})
 #   add_subdirectory(node)
 # endif()
 

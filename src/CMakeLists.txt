@@ -4,7 +4,7 @@ target_include_directories(
                        $<INSTALL_INTERFACE:include>)
 target_include_directories(TactileSensor PRIVATE ${MUJOCO_INCLUDE_DIR})
 target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
-# if (DEFINED USE_ROS2)
+# if(DEFINED ENV{COLCON_CURRENT_PREFIX})
 #   target_sources(TactileSensor PRIVATE TactileSensorRos.cpp)
 #   target_include_directories(TactileSensor PUBLIC ${catkin_INCLUDE_DIRS})
 #   target_link_libraries(TactileSensor PUBLIC ${catkin_LIBRARIES})
