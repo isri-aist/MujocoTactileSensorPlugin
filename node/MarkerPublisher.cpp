@@ -29,7 +29,7 @@ MarkerPublisher::MarkerPublisher(rclcpp::Node::SharedPtr& nh)
   nh_ = nh;
 
   tactile_sensor_sub_ = nh_->create_subscription<mujoco_tactile_sensor_plugin::msg::TactileSensorData>(
-      "tactile_sensor_data", 1, std::bind(&MarkerPublisher::callback, this, std::placeholders::_1));
+      "tactile_sensor", 1, std::bind(&MarkerPublisher::callback, this, std::placeholders::_1));
   marker_arr_pub_ = nh_->create_publisher<visualization_msgs::msg::MarkerArray>("marker_arr", 1);
 
   nh_->get_parameter("marker_color_alpha", marker_color_alpha_);

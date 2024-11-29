@@ -242,7 +242,10 @@ TactileSensorRos::TactileSensorRos(const mjModel * m,
   int argc = 0;
   char ** argv = nullptr;
 
-  rclcpp::init(argc, argv);
+  if (!rclcpp::ok()) 
+  {
+      rclcpp::init(argc, argv);
+  }
   rclcpp::NodeOptions node_options;
   
   nh_ = rclcpp::Node::make_shared("mujoco_ros", node_options);

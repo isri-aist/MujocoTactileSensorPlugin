@@ -13,6 +13,7 @@ if(DEFINED USE_ROS2)
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   target_link_libraries(TactileSensor PUBLIC ${cpp_typesupport_target} ${ament_LIBRARIES})
   target_include_directories(TactileSensor PUBLIC ${ament_INCLUDE_DIRS})
+  add_compile_definitions(ENABLE_ROS)
 endif()
 target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
 
