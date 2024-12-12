@@ -48,7 +48,7 @@ $ wstool update -t src
 $ source /opt/ros/${ROS_DISTRO}/setup.bash
 $ rosdep install -y -r --from-paths src --ignore-src
 # Build a package.
-$ colcon build mujoco_tactile_sensor_plugin -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo> -DUSE_ROS2=ON
+$ colcon build --merge-install --packages-select mujoco_tactile_sensor_plugin --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo> -DUSE_ROS2=ON
 ```
 Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
 
