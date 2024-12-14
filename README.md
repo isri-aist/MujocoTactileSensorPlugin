@@ -56,7 +56,6 @@ Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
 ### Example as a standalone project
 Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and `MuJocoTactileSensorPlugin` is cloned under `${HOME}/src/`.
 ```bash
-$ cp ${HOME}/src/MujocoTactileSensorPlugin/build/src/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin
 $ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
 $ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml
 ```
@@ -65,7 +64,6 @@ $ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml
 Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and the path to the catkin workspace is `${HOME}/ros/ws_mujoco`.
 ```bash
 # Terminal 1
-$ cp ${HOME}/ros/ws_mujoco/install/lib/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin
 $ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
 $ ./simulate ${HOME}/ros/ws_mujoco/src/mujoco_tactile_sensor_plugin/xml/sample_tactile_sensor_ros.xml
 # Terminal 2

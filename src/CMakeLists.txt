@@ -29,3 +29,8 @@ install(
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/MujocoTactileSensorPlugin
         DESTINATION "${INCLUDE_INSTALL_DIR}")
+
+install(
+  TARGETS TactileSensor TactileSensorPlugin
+  DESTINATION "${MUJOCO_BIN_DIR}/mujoco_plugin"
+)
