@@ -12,6 +12,7 @@ set(CXX_DISABLE_WERROR ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+option(USE_ROS2 "Use ROS2" OFF)
 
 include(cmake/base.cmake)
 project(${PROJECT_NAME})
@@ -33,7 +34,8 @@ else()
   message(FATAL_ERROR "MuJoCo lib not found.")
 endif()
 
-if(DEFINED USE_ROS2)
+if(USE_ROS2)
+  set(AMENT_CMAKE_UNINSTALL_TARGET OFF)
   find_package(ament_cmake REQUIRED)
   find_package(rclcpp REQUIRED)
   find_package(std_msgs REQUIRED)
@@ -55,7 +57,6 @@ if(DEFINED USE_ROS2)
 
   ament_export_dependencies(rosidl_default_runtime)
 
-  ament_package()
 else()
   set(DOXYGEN_HTML_OUTPUT doxygen-html)
 endif()
@@ -63,10 +64,14 @@ endif()
 add_subdirectory(src)
 add_subdirectory(xml)
 
-if(DEFINED USE_ROS2)
+if(USE_ROS2)
   add_subdirectory(node)
 endif()
 
 if(INSTALL_DOCUMENTATION)
   add_subdirectory(doc)
+endif()
+
+if(USE_ROS2)
+  ament_package()
 endif()
