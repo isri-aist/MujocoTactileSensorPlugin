@@ -1,4 +1,4 @@
-**This is the branch for ROS2; use [the ros1 branch](https://github.com/isri-aist/MujocoTactileSensorPlugin/tree/ros1) for ROS1.**
+**This is the branch for ROS1.**
 
 # [MujocoTactileSensorPlugin](https://github.com/isri-aist/MujocoTactileSensorPlugin)
 Plugin to simulate tactile sensors in MuJoCo
