@@ -58,7 +58,7 @@ IncludeCategories:
     Priority:        6
   - Regex:           '^(<boost/)'
     Priority:        7
-  - Regex:           '^(<(nanomsg|geos|.*_msgs|ros|tf2.*)/)'
+  - Regex:           '^(<(nanomsg|geos|.*_msgs|ros|rclcpp|tf2.*)/)'
     Priority:        8
   - Regex:           '^(<mujoco/)'
     Priority:        9

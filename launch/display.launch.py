@@ -22,39 +22,36 @@ def launch_setup(context, *args, **kwargs):
     run_rviz = context.launch_configurations["run_rviz"]
 
     rviz_config_file = os.path.join(
-        get_package_share_directory('mujoco_tactile_sensor_plugin'),
-        'launch',
-        'display.rviz')
+        get_package_share_directory("mujoco_tactile_sensor_plugin"),
+        "launch",
+        "display.rviz",
+    )
 
     marker_publisher_node = Node(
-        package='mujoco_tactile_sensor_plugin',
-        executable='MarkerPublisher',
-        name='marker_publisher',
-        output='screen',
+        package="mujoco_tactile_sensor_plugin",
+        executable="MarkerPublisher",
+        name="marker_publisher",
+        output="screen",
         remappings=[
-            ('/tactile_sensor', '/mujoco/tactile_sensor'),
-            ('/marker_arr', '/mujoco/tactile_sensor/marker_arr')
-        ]
+            ("/tactile_sensor", "/mujoco/tactile_sensor"),
+            ("/marker_arr", "/mujoco/tactile_sensor/marker_arr"),
+        ],
     )
 
     rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', rviz_config_file],
-        condition=IfCondition(run_rviz)
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="screen",
+        arguments=["-d", rviz_config_file],
+        condition=IfCondition(run_rviz),
     )
 
-    return [
-        marker_publisher_node,
-        rviz_node
-    ]
+    return [marker_publisher_node, rviz_node]
 
 
 def generate_launch_description():
-    """! Generate launch description
-    """
+    """! Generate launch description"""
     declared_arguments = []
 
     declared_arguments.append(
@@ -66,4 +63,5 @@ def generate_launch_description():
     )
 
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)])
+        declared_arguments + [OpaqueFunction(function=launch_setup)]
+    )

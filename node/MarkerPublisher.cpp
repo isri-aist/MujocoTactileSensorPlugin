@@ -1,15 +1,16 @@
 #include <rclcpp/rclcpp.hpp>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
+
 #include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
 
 #include <cmath>
-#include <tf2_eigen/tf2_eigen.hpp>
 
 class MarkerPublisher
 {
 public:
-  MarkerPublisher(rclcpp::Node::SharedPtr& nh);
+  MarkerPublisher(rclcpp::Node::SharedPtr & nh);
 
   void runLoop();
 
@@ -24,7 +25,7 @@ protected:
   float marker_color_alpha_ = 0.5f;
 };
 
-MarkerPublisher::MarkerPublisher(rclcpp::Node::SharedPtr& nh)
+MarkerPublisher::MarkerPublisher(rclcpp::Node::SharedPtr & nh)
 {
   nh_ = nh;
 

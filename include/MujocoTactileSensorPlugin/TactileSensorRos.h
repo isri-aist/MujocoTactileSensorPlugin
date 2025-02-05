@@ -1,8 +1,10 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
-#include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
+
 #include <MujocoTactileSensorPlugin/TactileSensor.h>
+
+#include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
 
 namespace mujoco::plugin::sensor
 {

@@ -19,13 +19,13 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
 RUN echo "source /root/catkin_ws/install/setup.bash" >> ~/.bashrc
 
 # install ros dependencies
-WORKDIR /root/catkin_ws 
+WORKDIR /root/catkin_ws
 
 # set default bash shell
-SHELL ["/bin/bash", "-c"] 
+SHELL ["/bin/bash", "-c"]
 
 # Install ros dependencies
 RUN rosdep update && rosdep install --from-paths src --ignore-src -r -y
 
 RUN source /opt/ros/humble/setup.bash && \
-  colcon build 
+  colcon build

@@ -5,13 +5,13 @@ target_include_directories(
 target_include_directories(TactileSensor PRIVATE ${MUJOCO_INCLUDE_DIR})
 if(USE_ROS2)
   target_sources(TactileSensor PRIVATE TactileSensorRos.cpp)
-  ament_target_dependencies(TactileSensor PUBLIC 
-    rclcpp std_msgs geometry_msgs visualization_msgs
-  )
+  ament_target_dependencies(TactileSensor PUBLIC rclcpp std_msgs geometry_msgs
+                            visualization_msgs)
   add_dependencies(TactileSensor ${PROJECT_NAME})
-  rosidl_get_typesupport_target(cpp_typesupport_target 
-    ${PROJECT_NAME} "rosidl_typesupport_cpp")
-  target_link_libraries(TactileSensor PUBLIC ${cpp_typesupport_target} ${ament_LIBRARIES})
+  rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME}
+                                "rosidl_typesupport_cpp")
+  target_link_libraries(TactileSensor PUBLIC ${cpp_typesupport_target}
+                                             ${ament_LIBRARIES})
   target_include_directories(TactileSensor PUBLIC ${ament_INCLUDE_DIRS})
 endif()
 target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
@@ -30,9 +30,13 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/MujocoTactileSensorPlugin
         DESTINATION "${INCLUDE_INSTALL_DIR}")
 
 add_custom_command(
-  TARGET TactileSensor POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensor> ${MUJOCO_BIN_DIR}/mujoco_plugin)
+  TARGET TactileSensor
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensor>
+          ${MUJOCO_BIN_DIR}/mujoco_plugin)
 
 add_custom_command(
-  TARGET TactileSensorPlugin POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensorPlugin> ${MUJOCO_BIN_DIR}/mujoco_plugin)
+  TARGET TactileSensorPlugin
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensorPlugin>
+          ${MUJOCO_BIN_DIR}/mujoco_plugin)
