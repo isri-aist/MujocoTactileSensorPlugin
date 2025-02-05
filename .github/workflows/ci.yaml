@@ -70,7 +70,6 @@ jobs:
         with:
           build-type: ${{ matrix.build-type }}
           cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }} -DUSE_ROS2=ON
-          colcon-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           test-packages: mujoco_tactile_sensor_plugin
       - name: Upload documentation
