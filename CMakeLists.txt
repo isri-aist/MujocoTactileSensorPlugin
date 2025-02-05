@@ -52,9 +52,6 @@ if(USE_ROS2)
   install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
   ament_export_dependencies(rosidl_default_runtime)
-
-else()
-  set(DOXYGEN_HTML_OUTPUT doxygen-html)
 endif()
 
 add_subdirectory(src)

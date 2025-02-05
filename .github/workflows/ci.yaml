@@ -70,7 +70,7 @@ jobs:
         with:
           build-type: ${{ matrix.build-type }}
           cmake-args: -DMUJOCO_ROOT_DIR=${{ github.workspace }}/../mujoco-${{ matrix.mujoco-version }} -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }} -DUSE_ROS2=ON
-          catkin-test-args: --no-deps
+          colcon-test-args: --no-deps
           build-packages: mujoco_tactile_sensor_plugin
           test-packages: mujoco_tactile_sensor_plugin
       - name: Upload documentation
@@ -78,7 +78,7 @@ jobs:
         run: |
           set -e
           set -x
-          cd ${GITHUB_WORKSPACE}/catkin_ws/src/${{ github.repository }}
+          cd ${GITHUB_WORKSPACE}/colcon_ws/src/${{ github.repository }}
           git config --global user.name "Masaki Murooka"
           git config --global user.email "m-murooka@aist.go.jp"
           git remote set-url origin "https://github.com/${{ github.repository }}"
@@ -87,7 +87,7 @@ jobs:
           rm -rf cmake/
           git checkout --quiet gh-pages
           rm -rf doxygen/
-          cp -r ${GITHUB_WORKSPACE}/catkin_ws/build/mujoco_tactile_sensor_plugin/doc/html/ doxygen
+          cp -r ${GITHUB_WORKSPACE}/colcon_ws/build/mujoco_tactile_sensor_plugin/doc/doxygen-html/ doxygen
           git add doxygen
           git_status=`git status -s`
           if test -n "$git_status"; then
