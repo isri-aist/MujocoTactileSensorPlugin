@@ -1,0 +1,33 @@
+# Indicates docker image
+FROM osrf/ros:humble-desktop-full 
+
+# Configure environment
+ENV DISPLAY host.docker.internal:0.0
+
+# Copy files
+COPY ./ /root/catkin_ws/src/mujoco_tactile_sensor_plugin/
+
+COPY ./dockerfiles/install /root/install
+
+# Run dependencies installation
+RUN chmod +x /root/install/*
+RUN sed -i -e 's/\r$//' /root/install/i_dep.sh
+RUN /bin/sh -e -c /root/install/i_dep.sh
+
+# Run dependencies mujoco
+RUN chmod +x /root/install/*
+RUN sed -i -e 's/\r$//' /root/install/i_mujoco.sh
+RUN /bin/sh -e -c /root/install/i_mujoco.sh
+
+# Set default bash shell
+SHELL ["/bin/bash", "-c"]
+
+# Set start up directory
+WORKDIR /root/catkin_ws
+
+# Set environment variables (for using commands)
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "source /root/catkin_ws/install/setup.bash" >> ~/.bashrc
+
+# Install ros dependencies
+RUN rosdep update && rosdep install --from-paths src --ignore-src -r -y

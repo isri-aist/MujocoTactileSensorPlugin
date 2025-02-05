@@ -20,7 +20,7 @@ https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/840652c9-f
 
 ### Requirements
 - Compiler supporting C++17
-- Tested on `Ubuntu 20.04 / ROS Noetic`
+- Tested on `Ubuntu 22.04 / ROS Humble`
 
 ### Dependencies
 - [MuJoCo](https://github.com/deepmind/mujoco) (>= 2.3.5)
@@ -50,9 +50,7 @@ $ wstool update -t src
 $ source /opt/ros/${ROS_DISTRO}/setup.bash
 $ rosdep install -y -r --from-paths src --ignore-src
 # Build a package.
-$ catkin init
-$ catkin config --extend /opt/ros/${ROS_DISTRO}
-$ catkin build mujoco_tactile_sensor_plugin -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo>
+$ colcon build --packages-select mujoco_tactile_sensor_plugin --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo> -DUSE_ROS2=ON
 ```
 Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
 
@@ -60,7 +58,6 @@ Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
 ### Example as a standalone project
 Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and `MuJocoTactileSensorPlugin` is cloned under `${HOME}/src/`.
 ```bash
-$ cp ${HOME}/src/MujocoTactileSensorPlugin/build/src/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin
 $ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
 $ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml
 ```
@@ -69,11 +66,10 @@ $ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml
 Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and the path to the catkin workspace is `${HOME}/ros/ws_mujoco`.
 ```bash
 # Terminal 1
-$ cp ${HOME}/ros/ws_mujoco/devel/lib/libTactileSensorPlugin.so ${HOME}/.mujoco/mujoco-2.3.5/bin/mujoco_plugin
 $ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
-$ ./simulate `rospack find mujoco_tactile_sensor_plugin`/xml/sample_tactile_sensor_ros.xml
+$ ./simulate ${HOME}/ros/ws_mujoco/src/mujoco_tactile_sensor_plugin/xml/sample_tactile_sensor_ros.xml
 # Terminal 2
-$ roslaunch mujoco_tactile_sensor_plugin display.launch
+$ ros2 launch mujoco_tactile_sensor_plugin display.launch.py
 ```
 
 ## Plugins
