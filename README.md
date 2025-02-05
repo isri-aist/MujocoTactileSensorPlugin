@@ -67,7 +67,7 @@ Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, 
 ```bash
 # Terminal 1
 $ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
-$ ./simulate ${HOME}/ros/ws_mujoco/src/mujoco_tactile_sensor_plugin/xml/sample_tactile_sensor_ros.xml
+$ ./simulate `ros2 pkg prefix mujoco_tactile_sensor_plugin`/share/xml/sample_tactile_sensor_ros.xml
 # Terminal 2
 $ ros2 launch mujoco_tactile_sensor_plugin display.launch.py
 ```
