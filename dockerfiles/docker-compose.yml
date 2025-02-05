@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  mujoco_tactile_sensor_plugin:
+    image: mujoco_tactile_sensor_plugin:humble
+    user: root
+    container_name: mujoco_tactile_sensor_plugin
+    build:
+      context: ..
+      dockerfile: ./dockerfiles/Dockerfile
+    volumes:
+      - "../:/root/catkin_ws/src/mujoco_tactile_sensor_plugin/"
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "/tmp/.docker.xauth:/tmp/.docker.xauth"
+    environment:
+      - "DISPLAY=$DISPLAY"
+      - "XAUTHORITY=/tmp/.docker.xauth"
+      - "QT_X11_NO_MITSHM=1"
+    privileged: True
+    tty: True
+    stdin_open: True
+    network_mode: host
+    command: bash
