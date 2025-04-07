@@ -6,7 +6,7 @@ repos:
 #   - id: check-useless-excludes
 #   - id: check-hooks-apply
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v19.1.6
+  rev: v20.1.0
   hooks:
   - id: clang-format
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -25,7 +25,7 @@ repos:
   - id: mixed-line-ending
   - id: trailing-whitespace
 - repo: https://github.com/psf/black
-  rev: 24.10.0
+  rev: 25.1.0
   hooks:
   - id: black
 - repo: https://github.com/MarcoGorelli/cython-lint
@@ -34,7 +34,7 @@ repos:
   - id: cython-lint
   - id: double-quote-cython-strings
 - repo: https://github.com/PyCQA/flake8
-  rev: 7.1.1
+  rev: 7.2.0
   hooks:
   - id: flake8
     exclude: ^binding/python/rbdyn/.*__init__.py
