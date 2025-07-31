@@ -28,6 +28,10 @@ jobs:
             build-type: RelWithDebInfo
             mujoco-version: 2.3.7 # 3.0.0
             standalone: colcon
+          - os: ubuntu-22.04
+            build-type: RelWithDebInfo
+            mujoco-version: 3.3.0 # 3.0.0
+            standalone: colcon
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup environment variables
