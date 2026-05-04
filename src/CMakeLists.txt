@@ -1,4 +1,5 @@
-add_library(TactileSensor SHARED TactileSensor.cpp)
+add_library(TactileSensor STATIC TactileSensor.cpp)
+set_target_properties(TactileSensor PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(
   TactileSensor PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                        $<INSTALL_INTERFACE:include>)
@@ -19,25 +20,16 @@ target_link_libraries(TactileSensor PUBLIC ${LIB_MUJOCO})
 
 add_library(TactileSensorPlugin SHARED plugin.cpp)
 target_include_directories(TactileSensorPlugin PRIVATE ${MUJOCO_INCLUDE_DIR})
-target_link_libraries(TactileSensorPlugin PUBLIC TactileSensor)
+target_link_libraries(TactileSensorPlugin PRIVATE TactileSensor)
+set_target_properties(
+  TactileSensorPlugin PROPERTIES INSTALL_RPATH
+                                  "${MUJOCO_BIN_DIR}:${MUJOCO_LIB_DIR}")
 
 install(
-  TARGETS TactileSensor TactileSensorPlugin
+  TARGETS TactileSensorPlugin
   EXPORT "${TARGETS_EXPORT_NAME}"
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  LIBRARY DESTINATION ${MUJOCO_BIN_DIR}/mujoco_plugin
   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/MujocoTactileSensorPlugin
         DESTINATION "${INCLUDE_INSTALL_DIR}")
-
-add_custom_command(
-  TARGET TactileSensor
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensor>
-          ${MUJOCO_BIN_DIR}/mujoco_plugin)
-
-add_custom_command(
-  TARGET TactileSensorPlugin
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TactileSensorPlugin>
-          ${MUJOCO_BIN_DIR}/mujoco_plugin)

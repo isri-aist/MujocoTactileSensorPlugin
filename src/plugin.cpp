@@ -5,15 +5,10 @@
 #  include <MujocoTactileSensorPlugin/TactileSensorRos.h>
 #endif
 
-namespace mujoco::plugin::sensor
-{
-
 mjPLUGIN_LIB_INIT
 {
-  TactileSensor::RegisterPlugin();
+  mujoco::plugin::sensor::TactileSensor::RegisterPlugin();
 #if ENABLE_ROS
-  TactileSensorRos::RegisterPlugin();
+  mujoco::plugin::sensor::TactileSensorRos::RegisterPlugin();
 #endif
 }
-
-} // namespace mujoco::plugin::sensor
