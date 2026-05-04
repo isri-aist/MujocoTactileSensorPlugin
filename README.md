@@ -13,8 +13,8 @@ https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/840652c9-f
 - Since it is in plugin style, you can use it without rebuilding MuJoCo from the source.
 - Plane and cylinder surfaces are supported as sensor mounting surfaces.
 - Square and hexagonal grids are supported as sensor arrays.
-- It supports both building with cmake as a standalone project and building with catkin as a ROS package.
-- If built as a ROS package, sensor information and visualization markers are published as ROS topics.
+- It is built as a ROS 2 package and provides a MuJoCo plugin.
+- Sensor information and visualization markers are published as ROS topics.
 
 ## Install
 
@@ -25,20 +25,7 @@ https://github.com/isri-aist/MujocoTactileSensorPlugin/assets/6636600/840652c9-f
 ### Dependencies
 - [MuJoCo](https://github.com/deepmind/mujoco) (>= 2.3.5)
 
-### Installation procedure as a standalone project
-```bash
-$ mkdir ${HOME}/src && cd ${HOME}/src
-$ git clone git@github.com:isri-aist/MujocoTactileSensorPlugin.git --recursive
-$ cd MujocoTactileSensorPlugin
-$ mkdir build && cd build
-$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo>
-$ make
-$ make install
-```
-`<absolute path to MuJoCo>` is the path to the root directory of MuJoCo.
-For example, `${HOME}/.mujoco/mujoco-2.3.5` if you installed MuJoCo from release, or `${HOME}/src/mujoco` if you installed it from source.
-
-### Installation procedure as a ROS package
+### Installation procedure
 ```bash
 # Setup catkin workspace.
 $ mkdir -p ${HOME}/ros/ws_mujoco/src
@@ -50,19 +37,12 @@ $ wstool update -t src
 $ source /opt/ros/${ROS_DISTRO}/setup.bash
 $ rosdep install -y -r --from-paths src --ignore-src
 # Build a package.
-$ colcon build --packages-select mujoco_tactile_sensor_plugin --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo> -DUSE_ROS2=ON
+$ colcon build --packages-select mujoco_tactile_sensor_plugin --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMUJOCO_ROOT_DIR=<absolute path to MuJoCo>
 ```
-Add `source ${HOME}/ros/ws_mujoco/devel/setup.bash` to `${HOME}/.bashrc`.
+Add `source ${HOME}/ros/ws_mujoco/install/setup.bash` to `${HOME}/.bashrc`.
 
 ## Examples
-### Example as a standalone project
-Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and `MuJocoTactileSensorPlugin` is cloned under `${HOME}/src/`.
-```bash
-$ cd ${HOME}/.mujoco/mujoco-2.3.5/bin
-$ ./simulate ${HOME}/src/MujocoTactileSensorPlugin/xml/sample_tactile_sensor.xml
-```
-
-### Example as a ROS package
+### Example
 Assume that MuJoCo is installed in `${HOME}/.mujoco/mujoco-2.3.5` from release, and the path to the catkin workspace is `${HOME}/ros/ws_mujoco`.
 ```bash
 # Terminal 1
@@ -99,7 +79,6 @@ An example of tags to be added to the MJCF file:
 
 ### MujocoTactileSensorRosPlugin
 This is a plugin with ROS interface to simulate tactile sensors.
-This is only available when built as a ROS package.
 
 In addition to the attributes of `MujocoTactileSensorPlugin`, the following attributes are required.
 - `frame_id`: Frame ID of ROS topic (Site name is used if omitted)
