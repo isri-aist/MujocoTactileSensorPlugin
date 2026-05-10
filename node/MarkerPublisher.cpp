@@ -23,6 +23,7 @@ protected:
   rclcpp::Subscription<mujoco_tactile_sensor_plugin::msg::TactileSensorData>::SharedPtr tactile_sensor_sub_;
 
   float marker_color_alpha_ = 0.5f;
+  std::string frame_id_ = "";
 };
 
 MarkerPublisher::MarkerPublisher(rclcpp::Node::SharedPtr & nh)
@@ -34,6 +35,7 @@ MarkerPublisher::MarkerPublisher(rclcpp::Node::SharedPtr & nh)
   marker_arr_pub_ = nh_->create_publisher<visualization_msgs::msg::MarkerArray>("marker_arr", 1);
 
   nh_->get_parameter("marker_color_alpha", marker_color_alpha_);
+  frame_id_ = nh_->declare_parameter<std::string>("frame_id", frame_id_);
 }
 
 void MarkerPublisher::runLoop()
@@ -64,6 +66,10 @@ void MarkerPublisher::callback(const mujoco_tactile_sensor_plugin::msg::TactileS
   {
     visualization_msgs::msg::Marker sensor_marker;
     sensor_marker.header = msg->header;
+    if(!frame_id_.empty())
+    {
+      sensor_marker.header.frame_id = frame_id_;
+    }
     sensor_marker.ns = "sensor";
     sensor_marker.id = static_cast<int>(marker_arr_msg.markers.size());
     if(msg->grid_type == msg->grid_square)
