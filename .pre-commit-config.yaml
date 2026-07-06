@@ -6,11 +6,11 @@ repos:
 #   - id: check-useless-excludes
 #   - id: check-hooks-apply
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v20.1.7
+  rev: v22.1.5
   hooks:
   - id: clang-format
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-added-large-files
   - id: check-ast
@@ -24,12 +24,12 @@ repos:
   - id: fix-byte-order-marker
   - id: mixed-line-ending
   - id: trailing-whitespace
-- repo: https://github.com/psf/black
-  rev: 25.1.0
+- repo: https://github.com/psf/black-pre-commit-mirror
+  rev: 26.5.1
   hooks:
   - id: black
 - repo: https://github.com/MarcoGorelli/cython-lint
-  rev: v0.16.7
+  rev: v0.21.0
   hooks:
   - id: cython-lint
   - id: double-quote-cython-strings
